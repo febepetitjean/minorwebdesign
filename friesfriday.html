@@ -1,335 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fries Friday — Falling I's</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Friesfriday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@1,800&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --red:#f1284b;
-    --yellow:#ffbd32;
+  :root{--red:#EF2F4E;--yellow:#FFBF31}
+  html,body{height:100%;margin:0;overflow:hidden;background:var(--red)}
+  #pile{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+  #pile .slot{position:absolute}
+  #pile .b{position:absolute;background:var(--yellow)}
+  /* Logo: an SVG on the original 2576x1449 artboard, so every part sits exactly where it does in the design. */
+  #logo{position:absolute;inset:0;width:100%;height:100%;z-index:2;overflow:visible}
+  #logo text{
+    font-family:"Jost","Futura","Century Gothic","Avenir Next",sans-serif;
+    font-style:italic;font-weight:800;font-size:233px;fill:var(--yellow);
   }
-
-  *{box-sizing:border-box}
-
-  html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:var(--red);
+  #logo .lb{fill:var(--yellow)}
+  .replay{
+    position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;
+    font:700 14px/1 "Jost","Futura","Century Gothic",sans-serif;
+    color:var(--yellow);background:transparent;border:2px solid var(--yellow);
+    border-radius:999px;padding:10px 18px;cursor:pointer;
   }
-
-  body{
-    font-family: Arial Black, Arial, Helvetica, sans-serif;
-  }
-
-  .scene{
-    position:relative;
-    width:100vw;
-    height:100vh;
-    overflow:hidden;
-    background:var(--red);
-  }
-
-  /* The word is built without its two I's.
-     Their spaces are kept with .i-slot elements. */
-  .logo{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    display:flex;
-    align-items:flex-end;
-    white-space:nowrap;
-    color:var(--yellow);
-    font-size:clamp(72px, 9.5vw, 170px);
-    font-weight:900;
-    font-style:italic;
-    line-height:.78;
-    letter-spacing:-.065em;
-    z-index:10;
-  }
-
-  .letter{display:block}
-
-  .i-slot{
-    position:relative;
-    display:block;
-    width:.42em;
-    height:1.52em;
-    flex:none;
-  }
-
-  /* The falling I's */
-  .falling-i,
-  .stick{
-    position:absolute;
-    width:clamp(18px, 1.95vw, 34px);
-    height:clamp(150px, 16vw, 285px);
-    background:var(--yellow);
-    transform-origin:center center;
-    z-index:5;
-  }
-
-  .falling-i{
-    top:-320px;
-    left:0;
-    opacity:1;
-    will-change:transform, top;
-  }
-
-  /* Random extra fries/sticks */
-  .stick{
-    top:-320px;
-    left:0;
-    z-index:3;
-    will-change:transform, top;
-  }
-
-  /* Slightly skewed ends, like the reference artwork */
-  .falling-i,
-  .stick{
-    clip-path:polygon(13% 0,100% 1%,87% 100%,0 99%);
-  }
-
-  .ground{
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
-    height:3px;
-    z-index:2;
-  }
-
-  .controls{
-    position:absolute;
-    left:24px;
-    bottom:20px;
-    z-index:30;
-    display:flex;
-    gap:8px;
-  }
-
-  button{
-    border:1px solid rgba(255,255,255,.2);
-    background:rgba(0,0,0,.08);
-    color:rgba(255,255,255,.7);
-    padding:8px 12px;
-    border-radius:999px;
-    font:600 12px Arial,sans-serif;
-    cursor:pointer;
-    backdrop-filter:blur(5px);
-  }
-
-  button:hover{
-    background:rgba(0,0,0,.15);
-    color:white;
-  }
-
-  @media (max-width:700px){
-    .logo{
-      font-size:clamp(48px, 10vw, 90px);
-    }
-    .falling-i,.stick{
-      width:15px;
-      height:130px;
-    }
-  }
+  .replay:hover{background:var(--yellow);color:var(--red)}
+  .replay:focus-visible{outline:3px solid #fff;outline-offset:3px}
 </style>
 </head>
-
 <body>
-<div class="scene" id="scene">
-  <div class="logo" aria-label="FRIESFRIDAY">
-    <span class="letter">F</span>
-    <span class="letter">R</span>
-    <span class="i-slot" id="slot1"></span>
-    <span class="letter">E</span>
-    <span class="letter">S</span>
-    <span class="letter">F</span>
-    <span class="letter">R</span>
-    <span class="i-slot" id="slot2"></span>
-    <span class="letter">D</span>
-    <span class="letter">A</span>
-    <span class="letter">Y</span>
-  </div>
-
-  <div class="ground"></div>
-
-  <div class="controls">
-    <button id="restart">Replay</button>
-  </div>
-</div>
+  <div id="pile" aria-hidden="true"></div>
+  <svg id="logo" viewBox="0 0 2576 1449" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Friesfriday">
+    <text x="480"  y="774" textLength="297" lengthAdjust="spacingAndGlyphs">FR</text>
+    <text x="879"  y="774" textLength="593" lengthAdjust="spacingAndGlyphs">ESFR</text>
+    <text x="1575" y="774" textLength="513" lengthAdjust="spacingAndGlyphs">DAY</text>
+    <polygon class="lb" points="886,328 938,330 847,774 795,774"/>
+    <polygon class="lb" points="1581,328 1633,330 1542,774 1490,774"/>
+  </svg>
+  <button class="replay" type="button">Replay</button>
 
 <script>
-(() => {
-  const scene = document.getElementById('scene');
-  const slots = [
-    document.getElementById('slot1'),
-    document.getElementById('slot2')
-  ];
+(function(){
+  var SKEW = -11.5;
+  var LAYERS = 4, PITCH = 9.5, LAYER_STEP = 1.9, BASE = 2.4;   // in "u" (1u = 1% of logo width)
+  var L = 17.3, T = 2;
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var pile = document.getElementById("pile");
+  var svg = document.getElementById("logo");
+  var logoBars = svg.querySelectorAll(".lb");
+  var running = [];
+  function rnd(a, b){ return a + Math.random()*(b - a); }
 
-  const sticks = [];
-  const occupiedBottom = [];
-
-  const GRAVITY = 1500;
-  const EXTRA_STICKS = 32;
-
-  let startTime = performance.now();
-
-  function rand(min,max){
-    return Math.random() * (max-min) + min;
+  // Fall, bounce twice, settle exactly at 0 (the original position).
+  function dropFrames(fromY, b, tf){
+    return [
+      {offset:0,   transform:tf(fromY), easing:"cubic-bezier(.55,0,.9,.6)"},
+      {offset:.60, transform:tf(0),     easing:"cubic-bezier(.2,.7,.4,1)"},
+      {offset:.76, transform:tf(-b),    easing:"cubic-bezier(.6,0,.9,.5)"},
+      {offset:.88, transform:tf(0),     easing:"cubic-bezier(.2,.7,.4,1)"},
+      {offset:.94, transform:tf(-b*.26),easing:"cubic-bezier(.6,0,.9,.5)"},
+      {offset:1,   transform:tf(0)}
+    ];
   }
 
-  function makeStick(className='stick'){
-    const el = document.createElement('div');
-    el.className = className;
-    scene.appendChild(el);
+  function play(){
+    running.forEach(function(a){ a.cancel(); });
+    running = [];
+    pile.innerHTML = "";
 
-    const w = el.getBoundingClientRect().width;
-    const h = el.getBoundingClientRect().height;
+    var W = window.innerWidth, H = window.innerHeight;
+    var rect = svg.getBoundingClientRect();
+    var s = Math.min(rect.width/2576, rect.height/1449);           // px per SVG unit
+    var top0 = rect.top + (rect.height - 1449*s)/2;                // screen y of artboard top
+    var u = s*25.76;                                               // px per "u"
 
-    const item = {
-      el,
-      x: rand(0, window.innerWidth - w),
-      y: -rand(80, 700),
-      vy: rand(0,80),
-      rotation: rand(-8,8),
-      angular: rand(-25,25),
-      width:w,
-      height:h,
-      landed:false,
-      delay:rand(0, 1100)
-    };
-
-    el.style.left = `${item.x}px`;
-    sticks.push(item);
-    return item;
-  }
-
-  function reset(){
-    document.querySelectorAll('.stick,.falling-i').forEach(e => e.remove());
-    sticks.length = 0;
-    occupiedBottom.length = 0;
-
-    // Two I's: exact destination is calculated from the slots.
-    slots.forEach((slot, index) => {
-      const i = document.createElement('div');
-      i.className = 'falling-i';
-      i.dataset.index = index;
-      scene.appendChild(i);
-
-      const slotRect = slot.getBoundingClientRect();
-      const sceneRect = scene.getBoundingClientRect();
-
-      const x = slotRect.left - sceneRect.left + slotRect.width * .26;
-      const baselineY = slotRect.bottom - sceneRect.top - slotRect.height * .015;
-      const h = i.getBoundingClientRect().height;
-
-      sticks.push({
-        el:i,
-        x,
-        y:-h-rand(20,160),
-        vy:0,
-        rotation:rand(-7,7),
-        angular:rand(-18,18),
-        width:i.getBoundingClientRect().width,
-        height:h,
-        targetX:x,
-        targetY:baselineY - h,
-        special:true,
-        landed:false,
-        delay:index * 650 + 250
+    // 1) Logo bars: start fully above the screen, land back at translateY(0).
+    if(!reduced){
+      var from = -(top0 + 774*s)/s - 60;                           // in SVG units
+      logoBars.forEach(function(el, k){
+        running.push(el.animate(
+          dropFrames(from, .035*H/s, function(y){ return "translateY("+y+"px)"; }),
+          {duration:1500, delay:k*140, fill:"both"}
+        ));
       });
-    });
-
-    // Extra sticks fall from the top and remain where they land.
-    for(let n=0;n<EXTRA_STICKS;n++){
-      makeStick();
     }
 
-    startTime = performance.now();
-    requestAnimationFrame(frame);
-  }
+    // 2) Identical bars fall at the same time, settle nearly flat and crisscross.
+    var perLayer = Math.ceil(W/(PITCH*u)) + 2;
+    var n = 0;
+    for(var r = 0; r < LAYERS; r++){
+      for(var i = 0; i < perLayer; i++){
+        var sign = ((i + r) % 2 === 0) ? 1 : -1;
+        var tilt = sign * rnd(7, 17);
+        var x = (i*PITCH + (r % 2 ? PITCH/2 : 0) - 8 + rnd(-1.2, 1.2))*u;
+        var y = (BASE + r*LAYER_STEP + rnd(-.3, .3))*u;
+        var endRot = "rotate("+(90 + tilt)+"deg) skewX("+SKEW+"deg)";
 
-  function findLandingY(item){
-    // Simple pile: sticks settle at the bottom, avoiding excessive overlap.
-    const floor = window.innerHeight - 2;
-    let y = floor - item.height;
+        var slot = document.createElement("div");
+        slot.className = "slot";
+        slot.style.cssText = "z-index:"+n+";left:"+x+"px;bottom:"+y+"px;width:"+(L*u)+"px;height:"+(T*u)+"px";
+        var b = document.createElement("div");
+        b.className = "b";
+        b.style.cssText = "width:"+(T*u)+"px;height:"+(L*u)+"px;left:"+((L-T)/2*u)+"px;top:"+((T-L)/2*u)+"px;"+
+                          "box-shadow:0 0 0 "+(.22*u)+"px #EF2F4E;transform:"+endRot;
+        slot.appendChild(b);
+        pile.appendChild(slot);
 
-    for(const other of occupiedBottom){
-      const horizontalOverlap =
-        item.x < other.x + other.width &&
-        item.x + item.width > other.x;
-
-      if(horizontalOverlap){
-        const candidate = other.y - item.height + 4;
-        if(candidate < y) y = candidate;
-      }
-    }
-    return Math.max(-50,y);
-  }
-
-  function land(item, targetY=null){
-    item.landed = true;
-    item.y = targetY !== null ? targetY : findLandingY(item);
-
-    occupiedBottom.push({
-      x:item.x,
-      y:item.y,
-      width:item.width,
-      height:item.height
-    });
-
-    item.el.style.top = `${item.y}px`;
-    item.el.style.transform = `rotate(${item.rotation}deg)`;
-  }
-
-  function frame(now){
-    const elapsed = now - startTime;
-    let active = false;
-
-    for(const item of sticks){
-      if(elapsed < item.delay){
-        active = true;
-        continue;
-      }
-
-      if(item.landed) continue;
-
-      active = true;
-
-      item.vy += GRAVITY / 60;
-      item.y += item.vy / 60;
-      item.rotation += item.angular / 60;
-
-      if(item.special){
-        // The I's land exactly in the two missing positions.
-        if(item.y >= item.targetY){
-          land(item, item.targetY);
+        if(!reduced){
+          var delay = 80 + n*45 + rnd(0, 120);
+          var dur = 1400 + rnd(0, 300);
+          var start = "rotate("+rnd(-14,14).toFixed(1)+"deg) skewX("+SKEW+"deg)";
+          running.push(slot.animate(
+            dropFrames(-(H + L*u + r*40), .035*H, function(v){ return "translateY("+v+"px)"; }),
+            {duration:dur, delay:delay, fill:"both"}
+          ));
+          running.push(b.animate([
+            {offset:0,   transform:start},
+            {offset:.30, transform:start, easing:"ease-in-out"},
+            {offset:.60, transform:endRot},
+            {offset:1,   transform:endRot}
+          ],{duration:dur, delay:delay, fill:"both"}));
         }
-      }else{
-        const floorY = findLandingY(item);
-        if(item.y >= floorY){
-          land(item, floorY);
-        }
+        n++;
       }
-
-      item.el.style.top = `${item.y}px`;
-      item.el.style.transform = `rotate(${item.rotation}deg)`;
     }
-
-    if(active) requestAnimationFrame(frame);
   }
 
-  document.getElementById('restart').addEventListener('click', reset);
-  window.addEventListener('resize', () => {
-    // Replaying after a resize keeps the I's aligned with the word.
-    reset();
-  });
-
-  reset();
+  document.querySelector(".replay").addEventListener("click", play);
+  var t; window.addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(play, 250); });
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(play);
 })();
 </script>
 </body>
