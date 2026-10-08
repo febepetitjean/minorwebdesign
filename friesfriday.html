@@ -1,35 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Friesfriday</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@1,800&display=swap" rel="stylesheet">
-<style>
-  :root{--red:#EF2F4E;--yellow:#FFBF31}
-  html,body{height:100%;margin:0;overflow:hidden;background:var(--red)}
-  #pile{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
-  #pile .slot{position:absolute}
-  #pile .b{position:absolute;background:var(--yellow)}
-
-  /* Logo: an SVG on the 2576x1449 artboard, traced from the design */
-  #logo{position:absolute;inset:0;width:100%;height:100%;z-index:2;overflow:visible}
-  #logo text{
-    font-family:"Jost","Futura","Century Gothic","Avenir Next",sans-serif;
-    font-style:italic;font-weight:800;font-size:273px;fill:var(--yellow);
-    pointer-events:none;
-  }
-  #logo .lb{fill:var(--yellow);stroke:transparent;stroke-width:16px;pointer-events:all}
-  #logo .hit{fill:transparent;pointer-events:all}
-  #logo [data-snack]{cursor:none}   /* the snack name replaces the cursor */
-
-  /* Snack-name cursor */
-  #tip{
-    position:fixed;left:0;top:0;z-index:10;pointer-events:none;
-    padding:.4em .8em;border:3px solid var(--red);border-radius:999px;
-    font:800 clamp(14px,1.7vw,28px)/1 "Jost","Futura","Century Gothic",sans-serif;
     letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;
     color:var(--red);background:var(--yellow);
     opacity:0;transition:opacity .08s;will-change:transform;
