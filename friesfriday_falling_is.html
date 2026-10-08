@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fries Friday — Falling I's</title>
+<style>
+  :root{
+    --red:#f1284b;
+    --yellow:#ffbd32;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:var(--red);
+  }
+
+  body{
+    font-family: Arial Black, Arial, Helvetica, sans-serif;
+  }
+
+  .scene{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    background:var(--red);
+  }
+
+  /* The word is built without its two I's.
+     Their spaces are kept with .i-slot elements. */
+  .logo{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    display:flex;
+    align-items:flex-end;
+    white-space:nowrap;
+    color:var(--yellow);
+    font-size:clamp(72px, 9.5vw, 170px);
+    font-weight:900;
+    font-style:italic;
+    line-height:.78;
+    letter-spacing:-.065em;
+    z-index:10;
+  }
+
+  .letter{display:block}
+
+  .i-slot{
+    position:relative;
+    display:block;
+    width:.42em;
+    height:1.52em;
+    flex:none;
+  }
+
+  /* The falling I's */
+  .falling-i,
+  .stick{
+    position:absolute;
+    width:clamp(18px, 1.95vw, 34px);
+    height:clamp(150px, 16vw, 285px);
+    background:var(--yellow);
+    transform-origin:center center;
+    z-index:5;
+  }
+
+  .falling-i{
+    top:-320px;
+    left:0;
+    opacity:1;
+    will-change:transform, top;
+  }
+
+  /* Random extra fries/sticks */
+  .stick{
+    top:-320px;
+    left:0;
+    z-index:3;
+    will-change:transform, top;
+  }
+
+  /* Slightly skewed ends, like the reference artwork */
+  .falling-i,
+  .stick{
+    clip-path:polygon(13% 0,100% 1%,87% 100%,0 99%);
+  }
+
+  .ground{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:3px;
+    z-index:2;
+  }
+
+  .controls{
+    position:absolute;
+    left:24px;
+    bottom:20px;
+    z-index:30;
+    display:flex;
+    gap:8px;
+  }
+
+  button{
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(0,0,0,.08);
+    color:rgba(255,255,255,.7);
+    padding:8px 12px;
+    border-radius:999px;
+    font:600 12px Arial,sans-serif;
+    cursor:pointer;
+    backdrop-filter:blur(5px);
+  }
+
+  button:hover{
+    background:rgba(0,0,0,.15);
+    color:white;
+  }
+
+  @media (max-width:700px){
+    .logo{
+      font-size:clamp(48px, 10vw, 90px);
+    }
+    .falling-i,.stick{
+      width:15px;
+      height:130px;
+    }
+  }
+</style>
+</head>
+
+<body>
+<div class="scene" id="scene">
+  <div class="logo" aria-label="FRIESFRIDAY">
+    <span class="letter">F</span>
+    <span class="letter">R</span>
+    <span class="i-slot" id="slot1"></span>
+    <span class="letter">E</span>
+    <span class="letter">S</span>
+    <span class="letter">F</span>
+    <span class="letter">R</span>
+    <span class="i-slot" id="slot2"></span>
+    <span class="letter">D</span>
+    <span class="letter">A</span>
+    <span class="letter">Y</span>
+  </div>
+
+  <div class="ground"></div>
+
+  <div class="controls">
+    <button id="restart">Replay</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const scene = document.getElementById('scene');
+  const slots = [
+    document.getElementById('slot1'),
+    document.getElementById('slot2')
+  ];
+
+  const sticks = [];
+  const occupiedBottom = [];
+
+  const GRAVITY = 1500;
+  const EXTRA_STICKS = 32;
+
+  let startTime = performance.now();
+
+  function rand(min,max){
+    return Math.random() * (max-min) + min;
+  }
+
+  function makeStick(className='stick'){
+    const el = document.createElement('div');
+    el.className = className;
+    scene.appendChild(el);
+
+    const w = el.getBoundingClientRect().width;
+    const h = el.getBoundingClientRect().height;
+
+    const item = {
+      el,
+      x: rand(0, window.innerWidth - w),
+      y: -rand(80, 700),
+      vy: rand(0,80),
+      rotation: rand(-8,8),
+      angular: rand(-25,25),
+      width:w,
+      height:h,
+      landed:false,
+      delay:rand(0, 1100)
+    };
+
+    el.style.left = `${item.x}px`;
+    sticks.push(item);
+    return item;
+  }
+
+  function reset(){
+    document.querySelectorAll('.stick,.falling-i').forEach(e => e.remove());
+    sticks.length = 0;
+    occupiedBottom.length = 0;
+
+    // Two I's: exact destination is calculated from the slots.
+    slots.forEach((slot, index) => {
+      const i = document.createElement('div');
+      i.className = 'falling-i';
+      i.dataset.index = index;
+      scene.appendChild(i);
+
+      const slotRect = slot.getBoundingClientRect();
+      const sceneRect = scene.getBoundingClientRect();
+
+      const x = slotRect.left - sceneRect.left + slotRect.width * .26;
+      const baselineY = slotRect.bottom - sceneRect.top - slotRect.height * .015;
+      const h = i.getBoundingClientRect().height;
+
+      sticks.push({
+        el:i,
+        x,
+        y:-h-rand(20,160),
+        vy:0,
+        rotation:rand(-7,7),
+        angular:rand(-18,18),
+        width:i.getBoundingClientRect().width,
+        height:h,
+        targetX:x,
+        targetY:baselineY - h,
+        special:true,
+        landed:false,
+        delay:index * 650 + 250
+      });
+    });
+
+    // Extra sticks fall from the top and remain where they land.
+    for(let n=0;n<EXTRA_STICKS;n++){
+      makeStick();
+    }
+
+    startTime = performance.now();
+    requestAnimationFrame(frame);
+  }
+
+  function findLandingY(item){
+    // Simple pile: sticks settle at the bottom, avoiding excessive overlap.
+    const floor = window.innerHeight - 2;
+    let y = floor - item.height;
+
+    for(const other of occupiedBottom){
+      const horizontalOverlap =
+        item.x < other.x + other.width &&
+        item.x + item.width > other.x;
+
+      if(horizontalOverlap){
+        const candidate = other.y - item.height + 4;
+        if(candidate < y) y = candidate;
+      }
+    }
+    return Math.max(-50,y);
+  }
+
+  function land(item, targetY=null){
+    item.landed = true;
+    item.y = targetY !== null ? targetY : findLandingY(item);
+
+    occupiedBottom.push({
+      x:item.x,
+      y:item.y,
+      width:item.width,
+      height:item.height
+    });
+
+    item.el.style.top = `${item.y}px`;
+    item.el.style.transform = `rotate(${item.rotation}deg)`;
+  }
+
+  function frame(now){
+    const elapsed = now - startTime;
+    let active = false;
+
+    for(const item of sticks){
+      if(elapsed < item.delay){
+        active = true;
+        continue;
+      }
+
+      if(item.landed) continue;
+
+      active = true;
+
+      item.vy += GRAVITY / 60;
+      item.y += item.vy / 60;
+      item.rotation += item.angular / 60;
+
+      if(item.special){
+        // The I's land exactly in the two missing positions.
+        if(item.y >= item.targetY){
+          land(item, item.targetY);
+        }
+      }else{
+        const floorY = findLandingY(item);
+        if(item.y >= floorY){
+          land(item, floorY);
+        }
+      }
+
+      item.el.style.top = `${item.y}px`;
+      item.el.style.transform = `rotate(${item.rotation}deg)`;
+    }
+
+    if(active) requestAnimationFrame(frame);
+  }
+
+  document.getElementById('restart').addEventListener('click', reset);
+  window.addEventListener('resize', () => {
+    // Replaying after a resize keeps the I's aligned with the word.
+    reset();
+  });
+
+  reset();
+})();
+</script>
+</body>
+</html>
