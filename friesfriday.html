@@ -13,13 +13,29 @@
   #pile{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
   #pile .slot{position:absolute}
   #pile .b{position:absolute;background:var(--yellow)}
-  /* Logo: an SVG on the original 2576x1449 artboard, so every part sits exactly where it does in the design. */
+
+  /* Logo: an SVG on the 2576x1449 artboard, traced from the design */
   #logo{position:absolute;inset:0;width:100%;height:100%;z-index:2;overflow:visible}
   #logo text{
     font-family:"Jost","Futura","Century Gothic","Avenir Next",sans-serif;
-    font-style:italic;font-weight:800;font-size:233px;fill:var(--yellow);
+    font-style:italic;font-weight:800;font-size:273px;fill:var(--yellow);
+    pointer-events:none;
   }
-  #logo .lb{fill:var(--yellow)}
+  #logo .lb{fill:var(--yellow);stroke:transparent;stroke-width:16px;pointer-events:all}
+  #logo .hit{fill:transparent;pointer-events:all}
+  #logo [data-snack]{cursor:none}   /* the snack name replaces the cursor */
+
+  /* Snack-name cursor */
+  #tip{
+    position:fixed;left:0;top:0;z-index:10;pointer-events:none;
+    padding:.4em .8em;border:3px solid var(--red);border-radius:999px;
+    font:800 clamp(14px,1.7vw,28px)/1 "Jost","Futura","Century Gothic",sans-serif;
+    letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;
+    color:var(--red);background:var(--yellow);
+    opacity:0;transition:opacity .08s;will-change:transform;
+  }
+  #tip.on{opacity:1}
+
   .replay{
     position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;
     font:700 14px/1 "Jost","Futura","Century Gothic",sans-serif;
@@ -32,20 +48,37 @@
 </head>
 <body>
   <div id="pile" aria-hidden="true"></div>
+
   <svg id="logo" viewBox="0 0 2576 1449" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Friesfriday">
-    <text x="480"  y="774" textLength="297" lengthAdjust="spacingAndGlyphs">FR</text>
-    <text x="879"  y="774" textLength="593" lengthAdjust="spacingAndGlyphs">ESFR</text>
-    <text x="1575" y="774" textLength="513" lengthAdjust="spacingAndGlyphs">DAY</text>
-    <polygon class="lb" points="886,328 938,330 847,774 795,774"/>
-    <polygon class="lb" points="1581,328 1633,330 1542,774 1490,774"/>
+    <!-- visible letters -->
+    <text x="481"  y="801" textLength="300" lengthAdjust="spacingAndGlyphs">FR</text>
+    <text x="880"  y="801" textLength="596" lengthAdjust="spacingAndGlyphs">ESFR</text>
+    <text x="1575" y="801" textLength="513" lengthAdjust="spacingAndGlyphs">DAY</text>
+
+    <!-- invisible hover areas, one per letter -->
+    <polygon class="hit" data-snack="Bicky Burger"   points="518,611 636,611 600,727 531,802 481,802"/>
+    <polygon class="hit" data-snack="Viandel"        points="623,801 658,612 735,613 777,643 781,664 775,800"/>
+    <polygon class="hit" data-snack="Kipcorn"        points="917,612 1034,612 1000,790 994,801 882,801"/>
+    <polygon class="hit" data-snack="Kaaskroket"     points="1024,768 1054,649 1090,614 1124,609 1162,623 1175,642 1161,754 1133,793 1095,804 1065,800 1032,780"/>
+    <polygon class="hit" data-snack="Frikandel"      points="1213,611 1331,611 1294,730 1226,802 1177,802 1205,652"/>
+    <polygon class="hit" data-snack="Mexicano"       points="1317,800 1353,612 1431,613 1466,633 1476,668 1470,800 1468,801"/>
+    <polygon class="hit" data-snack="Boulet"         points="1576,800 1612,612 1695,614 1736,636 1753,666 1756,700 1744,746 1712,782 1671,798 1646,801"/>
+    <polygon class="hit" data-snack="Chickenfingers" points="1732,801 1779,726 1852,609 1879,610 1889,651 1922,792 1924,800"/>
+    <polygon class="hit" data-snack="Loempia"        points="1928,612 2087,612 1996,799 1946,801"/>
+
+    <!-- the two tall bars (the "I"s) -->
+    <polygon class="lb" data-snack="Bitterballen" points="887,329 938,331 847,801 795,801"/>
+    <polygon class="lb" data-snack="Bamischijf"   points="1582,329 1633,331 1542,801 1491,801"/>
   </svg>
+
+  <div id="tip" aria-hidden="true"></div>
   <button class="replay" type="button">Replay</button>
 
 <script>
 (function(){
-  var SKEW = -11.5;
+  var SKEW = -10.9;
   var LAYERS = 4, PITCH = 9.5, LAYER_STEP = 1.9, BASE = 2.4;   // in "u" (1u = 1% of logo width)
-  var L = 17.3, T = 2;
+  var L = 18.3, T = 2;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var pile = document.getElementById("pile");
   var svg = document.getElementById("logo");
@@ -78,7 +111,7 @@
 
     // 1) Logo bars: start fully above the screen, land back at translateY(0).
     if(!reduced){
-      var from = -(top0 + 774*s)/s - 60;                           // in SVG units
+      var from = -(top0 + 801*s)/s - 60;                           // in SVG units
       logoBars.forEach(function(el, k){
         running.push(el.animate(
           dropFrames(from, .035*H/s, function(y){ return "translateY("+y+"px)"; }),
@@ -127,6 +160,27 @@
       }
     }
   }
+
+  // ---- Snack-name cursor ----
+  var tip = document.getElementById("tip");
+  var hideTimer;
+  function snackAt(el){ return el && el.getAttribute ? el.getAttribute("data-snack") : null; }
+  function showTip(e){
+    var name = snackAt(e.target);
+    if(!name){ tip.classList.remove("on"); return; }
+    if(tip.textContent !== name) tip.textContent = name;
+    tip.style.transform = "translate("+e.clientX+"px,"+e.clientY+"px) translate(-50%,-50%)";
+    tip.classList.add("on");
+  }
+  document.addEventListener("pointermove", showTip);
+  document.addEventListener("pointerdown", function(e){          // touch screens: tap a letter
+    showTip(e);
+    if(e.pointerType === "touch"){
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function(){ tip.classList.remove("on"); }, 1400);
+    }
+  });
+  document.documentElement.addEventListener("pointerleave", function(){ tip.classList.remove("on"); });
 
   document.querySelector(".replay").addEventListener("click", play);
   var t; window.addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(play, 250); });
