@@ -21,13 +21,12 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+html, body {
+  margin: 0;
+  min-height: 100%;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
   background: var(--pink);
   color: var(--yellow);
   font-family: 'Jost', sans-serif;
@@ -39,237 +38,169 @@ button {
   cursor: pointer;
 }
 
-/* =========================
-   TERUGKNOP
-========================= */
+/* TERUG NAAR INDEX */
 
-.back-home {
-  position: absolute;
-  top: 25px;
-  left: 25px;
+.back-home,
+.back-plateau {
+  position: fixed;
+  top: 20px;
+  left: 20px;
   z-index: 20;
-
+  padding: 10px 23px;
   background: var(--yellow);
   color: var(--pink);
   border: none;
-
-  padding: 10px 24px;
   font-size: 17px;
   font-weight: 900;
-
   text-decoration: none;
-  transition: transform .2s;
 }
 
-.back-home:hover {
-  transform: translateX(-5px);
-}
-
-/* =========================
-   HOOFDSCHERM
-========================= */
+/* HOOFDSCHERM */
 
 #ranking {
   min-height: 100vh;
-  padding: 105px 4vw 55px 0;
+  display: grid;
+  grid-template-columns: minmax(155px, 22%) minmax(0, 1fr);
+  column-gap: clamp(25px, 5vw, 90px);
+  align-items: center;
+  padding: 90px 4vw 35px 0;
 }
 
-/* ALLE CATEGORIEËN */
+/* CATEGORIEËN LINKS */
 
 #tiers {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: clamp(9px, 1.5vh, 18px);
+  min-width: 0;
 }
-
-/* ELKE RIJ */
 
 .tier {
-  display: grid;
-  grid-template-columns:
-    clamp(150px, 19vw, 290px)
-    minmax(0, 1fr);
-
-  column-gap: clamp(20px, 5vw, 90px);
-  align-items: center;
-
-  min-height: 95px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
-
-/* GELE CATEGORIEKNOP */
 
 .tier-label {
   width: 100%;
-  min-height: 65px;
-
+  min-height: clamp(52px, 7vh, 70px);
+  padding: 5px;
   background: var(--yellow);
   color: var(--pink);
-
   border: none;
-
-  font-size: clamp(19px, 2.1vw, 33px);
+  font-size: clamp(18px, 2vw, 31px);
   font-weight: 900;
-  text-align: center;
-
-  transition: transform .2s ease;
+  transition: transform .2s;
 }
 
 .tier-label:hover {
-  transform: translateX(8px);
+  transform: translateX(7px);
 }
 
-/* FOTO'S IN DE CATEGORIE */
-
 .tier-items {
-  min-height: 95px;
-  width: 100%;
-
+  min-height: 25px;
   display: flex;
   flex-wrap: wrap;
+  gap: 5px;
+  padding: 3px 5px;
+  border-radius: 7px;
+}
+
+/* SNACKS RECHTS */
+
+#right-side {
+  min-width: 0;
+  width: 100%;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+}
+
+#pool {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
-  align-content: center;
-
-  gap: 8px 15px;
-  padding: 8px 12px;
-
+  justify-items: center;
+  gap: clamp(5px, 1.2vh, 15px) 8px;
+  width: 100%;
+  min-height: 300px;
+  padding: 10px;
   border-radius: 8px;
 }
 
-/* =========================
-   FOTO'S VAN SNACKS
-========================= */
+/* FOTO'S */
 
 .snack {
   display: block;
-
-  width: clamp(80px, 8vw, 130px);
-  height: clamp(70px, 8vw, 115px);
-
+  width: 100%;
+  max-width: 125px;
+  height: clamp(65px, 10vh, 105px);
   object-fit: contain;
-
   cursor: grab;
   user-select: none;
   touch-action: none;
   -webkit-user-drag: none;
-
-  filter: drop-shadow(
-    4px 7px 4px rgba(0,0,0,.22)
-  );
-
-  transition: transform .2s ease;
+  filter: drop-shadow(4px 6px 4px rgba(0,0,0,.22));
+  transition: transform .2s;
 }
 
 .snack:hover {
-  transform: scale(1.13) rotate(-4deg);
-}
-
-.snack:active {
-  cursor: grabbing;
+  transform: scale(1.12) rotate(-4deg);
 }
 
 .snack.dragging {
   opacity: .25;
 }
 
-/* FOTO'S DIE AL IN EEN CATEGORIE STAAN */
-
 .tier-items .snack {
-  width: clamp(75px, 7vw, 110px);
-  height: 85px;
+  width: 65px;
+  height: 55px;
 }
 
-/* =========================
-   LOSSE SNACKS ONDERAAN
-========================= */
-
-#snack-section {
-  margin:
-    35px 5vw 0
-    clamp(170px, 24vw, 380px);
-
-  padding-top: 25px;
-}
-
-.snack-heading {
-  font-size: clamp(20px, 2.5vw, 36px);
-  margin: 0 0 15px;
-  font-weight: 900;
-}
-
-#pool {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  align-content: center;
-
-  gap: 15px 20px;
-
-  min-height: 140px;
-  padding: 20px 10px;
-
-  border-radius: 8px;
-}
-
-/* =========================
-   FALLBACK ALS FOTO ONTBREEKT
-========================= */
+/* ALS EEN FOTO ONTBREEKT */
 
 .snack-placeholder {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-
-  width: 120px;
-  min-height: 75px;
-
-  padding: 10px;
-
+  width: 100%;
+  max-width: 125px;
+  min-height: 65px;
+  padding: 8px;
   background: var(--yellow);
   color: var(--pink);
-
-  border-radius: 8px;
-
-  font-size: 15px;
-  line-height: 1.2;
+  border-radius: 7px;
+  font-size: 13px;
   text-align: center;
-
+  line-height: 1.2;
   cursor: grab;
   user-select: none;
   touch-action: none;
 }
 
 .tier-items .snack-placeholder {
-  width: 100px;
-  min-height: 60px;
-  font-size: 12px;
+  width: 75px;
+  min-height: 45px;
+  font-size: 10px;
 }
-
-/* =========================
-   DROP EFFECT
-========================= */
 
 .drop-active {
-  background: rgba(255,190,54,.16);
+  background: rgba(255,190,54,.15);
   outline: 2px dashed var(--yellow);
   outline-offset: -2px;
-  border-radius: 8px;
 }
 
-/* =========================
-   RESETKNOP
-========================= */
+/* RESET */
 
 .reset {
-  margin-top: 25px;
-
+  align-self: flex-start;
   background: transparent;
   color: var(--yellow);
-
   border: 2px solid var(--yellow);
-
-  padding: 12px 22px;
-
-  font-size: 15px;
+  padding: 9px 18px;
+  font-size: 13px;
   font-weight: 900;
 }
 
@@ -278,16 +209,12 @@ button {
   color: var(--pink);
 }
 
-/* =========================
-   PLATEAU PAGINA
-========================= */
+/* PLATEAU SCHERM */
 
 #plateau-page {
   display: none;
-
   min-height: 100vh;
   padding: 35px;
-
   text-align: center;
 }
 
@@ -295,37 +222,13 @@ button {
   display: block;
 }
 
-#ranking.hidden {
-  display: none;
-}
-
+#ranking.hidden,
 #home-button.hidden {
   display: none;
 }
 
-/* TERUG VAN PLATEAU */
-
-.back-plateau {
-  position: absolute;
-  top: 25px;
-  left: 25px;
-
-  background: var(--yellow);
-  color: var(--pink);
-
-  border: none;
-
-  padding: 10px 24px;
-
-  font-size: 17px;
-  font-weight: 900;
-}
-
-/* TITEL */
-
 .plateau-title {
   margin: 75px 0 0;
-
   font-size: clamp(55px, 9vw, 145px);
   font-weight: 900;
   line-height: 1;
@@ -336,54 +239,33 @@ button {
   font-size: clamp(16px, 2vw, 28px);
 }
 
-/* =========================
-   FRITUURPLATEAU
-========================= */
-
 .plateau {
-  position: relative;
-
   width: min(88vw, 950px);
   min-height: 450px;
-
   margin: 20px auto;
   padding: 50px;
-
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   align-content: center;
   justify-content: center;
-
   gap: 8px;
-
   background: #F5EEDF;
-
   border: 20px solid #E7E0D1;
   border-radius: 38px;
-
   box-shadow:
     inset 0 0 0 5px #D8D0C1,
     14px 18px 0 rgba(0,0,0,.15);
-
   transform: rotate(-1deg);
 }
-
-/* SNACKFOTO'S OP PLATEAU */
 
 .plateau-snack {
   width: clamp(110px, 17vw, 195px);
   height: 150px;
-
   object-fit: contain;
-
   transform: rotate(var(--rotation));
-
-  filter: drop-shadow(
-    5px 9px 5px rgba(0,0,0,.22)
-  );
-
-  transition: transform .25s ease;
+  filter: drop-shadow(5px 9px 5px rgba(0,0,0,.22));
+  transition: transform .25s;
 }
 
 .plateau-snack:hover {
@@ -391,26 +273,18 @@ button {
   z-index: 10;
 }
 
-/* FALLBACK OP PLATEAU */
-
 .snack-fallback {
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 150px;
   min-height: 100px;
-
   padding: 15px;
-
   background: var(--yellow);
   color: var(--pink);
-
   border-radius: 12px;
-
   font-size: 18px;
   text-align: center;
-
   transform: rotate(var(--rotation));
 }
 
@@ -419,95 +293,62 @@ button {
   font-size: 25px;
 }
 
-/* =========================
-   SLEEP-EFFECT
-========================= */
+/* SLEEPFOTO */
 
 .floating {
   position: fixed;
   z-index: 9999;
-
   pointer-events: none;
-
-  width: 140px;
-  height: 125px;
-
+  width: 135px;
+  height: 120px;
   object-fit: contain;
-
   transform: translate(-50%, -50%);
-
-  filter: drop-shadow(
-    5px 8px 5px rgba(0,0,0,.3)
-  );
+  filter: drop-shadow(5px 8px 5px rgba(0,0,0,.3));
 }
 
 .floating-text {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 10px;
-
   background: var(--yellow);
   color: var(--pink);
-
   border-radius: 8px;
-
-  font-size: 17px;
+  padding: 10px;
+  font-size: 16px;
   text-align: center;
 }
 
-/* =========================
-   MOBIEL
-========================= */
+/* KLEINERE SCHERMEN */
 
 @media (max-width: 800px) {
-
   #ranking {
-    padding-top: 95px;
-    padding-right: 12px;
-  }
-
-  .tier {
     grid-template-columns: 125px minmax(0, 1fr);
     column-gap: 12px;
-    min-height: 85px;
+    padding: 85px 12px 25px 0;
   }
 
   .tier-label {
-    min-height: 55px;
     font-size: 16px;
+    min-height: 52px;
   }
 
-  .tier-items {
-    min-height: 75px;
+  #pool {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 5px;
-    padding: 5px;
   }
 
   .snack {
-    width: 70px;
     height: 70px;
   }
 
   .tier-items .snack {
-    width: 60px;
-    height: 60px;
-  }
-
-  #snack-section {
-    margin-left: 20px;
-    margin-right: 10px;
-  }
-
-  #pool {
-    gap: 8px;
+    width: 48px;
+    height: 45px;
   }
 
   .plateau {
     width: 100%;
     min-height: 330px;
-
     padding: 20px;
     border-width: 12px;
   }
@@ -516,9 +357,19 @@ button {
     width: 110px;
     height: 100px;
   }
+}
 
-  #plateau-page {
-    padding: 20px;
+@media (max-width: 480px) {
+  #pool {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .snack {
+    height: 65px;
+  }
+
+  .tier-label {
+    font-size: 14px;
   }
 }
 </style>
@@ -526,43 +377,23 @@ button {
 
 <body>
 
-<!-- =========================
-     TERUG NAAR INDEX.HTML
-========================= -->
-
-<a href="index.html"
-   class="back-home"
-   id="home-button">
+<a href="index.html" class="back-home" id="home-button">
   ← TERUG
 </a>
-
-<!-- =========================
-     TIERLIST
-========================= -->
 
 <main id="ranking">
 
   <div id="tiers"></div>
 
-  <section id="snack-section">
-
-    <h2 class="snack-heading">
-      JOUW SNACKS
-    </h2>
-
+  <div id="right-side">
     <div id="pool" data-category="pool"></div>
 
     <button class="reset" id="reset">
       RESET RANKING
     </button>
-
-  </section>
+  </div>
 
 </main>
-
-<!-- =========================
-     PLATEAU SCHERM
-========================= -->
 
 <section id="plateau-page">
 
@@ -584,9 +415,7 @@ button {
 
 <script>
 
-/* =========================
-   CATEGORIEËN
-========================= */
+/* CATEGORIEËN */
 
 const categories = [
   "GODLIKE",
@@ -598,9 +427,7 @@ const categories = [
   "TRASH"
 ];
 
-/* =========================
-   SNACKS
-========================= */
+/* SNACKS */
 
 const snacks = [
   "curryworst",
@@ -630,12 +457,9 @@ const snacks = [
   "lucifers"
 ];
 
-/* =========================
-   FOTO BESTANDSNAMEN
-========================= */
+/* FOTO BESTANDSNAMEN */
 
 function snackImagePath(name) {
-
   const filename = name
     .toLowerCase()
     .normalize("NFD")
@@ -646,45 +470,32 @@ function snackImagePath(name) {
   return "snacks/" + filename + ".png";
 }
 
-/* =========================
-   OPSLAG
-========================= */
+/* OPSLAG */
 
 const storageKey = "friesfriday-ranking-v3";
 
 let ranking = {};
 
 try {
-  ranking =
-    JSON.parse(localStorage.getItem(storageKey)) || {};
+  ranking = JSON.parse(localStorage.getItem(storageKey)) || {};
 } catch {
   ranking = {};
 }
 
 function save() {
   try {
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify(ranking)
-    );
+    localStorage.setItem(storageKey, JSON.stringify(ranking));
   } catch (error) {
     console.warn("Opslaan niet gelukt:", error);
   }
 }
 
-/* =========================
-   ELEMENTEN
-========================= */
-
 const tiers = document.getElementById("tiers");
 const pool = document.getElementById("pool");
 
-/* =========================
-   SNACKFOTO MAKEN
-========================= */
+/* SNACKFOTO MAKEN */
 
 function createSnack(name) {
-
   const img = document.createElement("img");
 
   img.className = "snack";
@@ -697,73 +508,53 @@ function createSnack(name) {
   img.addEventListener("pointerdown", startDrag);
 
   img.onerror = () => {
-
     const fallback = document.createElement("div");
-
     fallback.className = "snack-placeholder";
     fallback.textContent = name;
     fallback.title = name;
     fallback.dataset.snack = name;
-
     fallback.addEventListener("pointerdown", startDrag);
-
     img.replaceWith(fallback);
   };
 
   return img;
 }
 
-/* =========================
-   TIERLIST RENDEREN
-========================= */
+/* RENDER */
 
 function render() {
-
   tiers.innerHTML = "";
   pool.innerHTML = "";
 
   categories.forEach(category => {
-
     const row = document.createElement("div");
     row.className = "tier";
 
     const label = document.createElement("button");
-
     label.className = "tier-label";
     label.textContent = category;
-
     label.onclick = () => openPlateau(category);
 
     const area = document.createElement("div");
-
     area.className = "tier-items";
     area.dataset.category = category;
 
     snacks
       .filter(name => ranking[name] === category)
-      .forEach(name => {
-        area.appendChild(createSnack(name));
-      });
+      .forEach(name => area.appendChild(createSnack(name)));
 
-    row.appendChild(label);
-    row.appendChild(area);
-
+    row.append(label, area);
     tiers.appendChild(row);
   });
 
   snacks
     .filter(name => !categories.includes(ranking[name]))
-    .forEach(name => {
-      pool.appendChild(createSnack(name));
-    });
+    .forEach(name => pool.appendChild(createSnack(name)));
 }
 
-/* =========================
-   SNACK VERPLAATSEN
-========================= */
+/* SNACK VERPLAATSEN */
 
 function moveSnack(name, category) {
-
   if (category === "pool") {
     delete ranking[name];
   } else {
@@ -774,23 +565,19 @@ function moveSnack(name, category) {
   render();
 }
 
-/* =========================
-   DRAG & DROP
-========================= */
+/* DRAG & DROP */
 
 let drag = null;
 
 function startDrag(e) {
-
   if (e.button !== 0) return;
-
   e.preventDefault();
 
   const original = e.currentTarget;
 
   drag = {
     name: original.dataset.snack,
-    original: original,
+    original,
     startX: e.clientX,
     startY: e.clientY,
     moved: false,
@@ -798,14 +585,12 @@ function startDrag(e) {
   };
 
   original.setPointerCapture(e.pointerId);
-
   original.addEventListener("pointermove", onDrag);
   original.addEventListener("pointerup", endDrag);
   original.addEventListener("pointercancel", cancelDrag);
 }
 
 function onDrag(e) {
-
   if (!drag) return;
 
   const distance = Math.hypot(
@@ -816,59 +601,42 @@ function onDrag(e) {
   if (!drag.moved && distance < 6) return;
 
   if (!drag.moved) {
-
     drag.moved = true;
 
     const ghost = document.createElement("img");
-
     ghost.className = "floating";
     ghost.src = snackImagePath(drag.name);
     ghost.alt = drag.name;
 
     ghost.onerror = () => {
-
       const fallback = document.createElement("div");
-
       fallback.className = "floating floating-text";
       fallback.textContent = drag.name;
-
       fallback.style.left = ghost.style.left;
       fallback.style.top = ghost.style.top;
-
       ghost.replaceWith(fallback);
       drag.ghost = fallback;
     };
 
     drag.ghost = ghost;
-
     document.body.appendChild(ghost);
-
     drag.original.classList.add("dragging");
   }
 
   drag.ghost.style.left = e.clientX + "px";
   drag.ghost.style.top = e.clientY + "px";
 
-  document
-    .querySelectorAll(".drop-active")
-    .forEach(el => el.classList.remove("drop-active"));
+  document.querySelectorAll(".drop-active").forEach(el => {
+    el.classList.remove("drop-active");
+  });
 
-  const target = document.elementFromPoint(
-    e.clientX,
-    e.clientY
-  );
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+  const zone = target?.closest(".tier-items, #pool, .tier-label");
 
-  const zone = target?.closest(
-    ".tier-items, #pool, .tier-label"
-  );
-
-  if (zone) {
-    zone.classList.add("drop-active");
-  }
+  if (zone) zone.classList.add("drop-active");
 }
 
 function cleanupDrag() {
-
   if (!drag) return;
 
   drag.original.classList.remove("dragging");
@@ -878,127 +646,77 @@ function cleanupDrag() {
   drag.original.removeEventListener("pointerup", endDrag);
   drag.original.removeEventListener("pointercancel", cancelDrag);
 
-  document
-    .querySelectorAll(".drop-active")
-    .forEach(el => el.classList.remove("drop-active"));
+  document.querySelectorAll(".drop-active").forEach(el => {
+    el.classList.remove("drop-active");
+  });
 
   drag = null;
 }
 
 function endDrag(e) {
-
   if (!drag) return;
 
   const name = drag.name;
   const moved = drag.moved;
 
-  const target = document.elementFromPoint(
-    e.clientX,
-    e.clientY
-  );
-
-  const zone = target?.closest(
-    ".tier-items, #pool, .tier-label"
-  );
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+  const zone = target?.closest(".tier-items, #pool, .tier-label");
 
   let category = null;
 
   if (zone) {
-
     if (zone.id === "pool") {
       category = "pool";
-    }
-
-    else if (zone.classList.contains("tier-items")) {
+    } else if (zone.classList.contains("tier-items")) {
       category = zone.dataset.category;
-    }
-
-    else if (zone.classList.contains("tier-label")) {
+    } else if (zone.classList.contains("tier-label")) {
       category = zone.textContent.trim();
     }
   }
 
   cleanupDrag();
 
-  if (moved && category) {
-    moveSnack(name, category);
-  }
+  if (moved && category) moveSnack(name, category);
 }
 
 function cancelDrag() {
   cleanupDrag();
 }
 
-/* =========================
-   PLATEAU OPENEN
-========================= */
+/* PLATEAU */
 
 function openPlateau(category) {
-
-  document
-    .getElementById("ranking")
-    .classList.add("hidden");
-
-  document
-    .getElementById("home-button")
-    .classList.add("hidden");
-
-  document
-    .getElementById("plateau-page")
-    .classList.add("active");
-
-  document
-    .getElementById("plateau-title")
-    .textContent = category;
+  document.getElementById("ranking").classList.add("hidden");
+  document.getElementById("home-button").classList.add("hidden");
+  document.getElementById("plateau-page").classList.add("active");
+  document.getElementById("plateau-title").textContent = category;
 
   const plateau = document.getElementById("plateau");
-
   plateau.innerHTML = "";
 
-  const selected = snacks.filter(
-    name => ranking[name] === category
-  );
+  const selected = snacks.filter(name => ranking[name] === category);
 
   if (selected.length === 0) {
-
     const empty = document.createElement("p");
-
     empty.className = "empty";
     empty.textContent = "Nog geen snacks op dit plateau!";
-
     plateau.appendChild(empty);
-
   } else {
-
     selected.forEach((name, index) => {
-
       const img = document.createElement("img");
-
       img.className = "plateau-snack";
       img.src = snackImagePath(name);
       img.alt = name;
       img.title = name;
 
-      const rotation =
-        ((index * 11) % 25) - 12;
-
-      img.style.setProperty(
-        "--rotation",
-        rotation + "deg"
-      );
+      const rotation = ((index * 11) % 25) - 12;
+      img.style.setProperty("--rotation", rotation + "deg");
 
       img.onerror = () => {
-
         const fallback = document.createElement("div");
-
         fallback.className = "snack-fallback";
         fallback.textContent = name;
-
-        fallback.style.setProperty(
-          "--rotation",
-          rotation + "deg"
-        );
-
+        fallback.style.setProperty("--rotation", rotation + "deg");
         img.replaceWith(fallback);
       };
 
@@ -1009,46 +727,28 @@ function openPlateau(category) {
   window.scrollTo(0, 0);
 }
 
-/* =========================
-   TERUG NAAR TIERLIST
-========================= */
+/* TERUG NAAR TIERLIST */
 
 document.getElementById("back").onclick = () => {
-
-  document
-    .getElementById("plateau-page")
-    .classList.remove("active");
-
-  document
-    .getElementById("ranking")
-    .classList.remove("hidden");
-
-  document
-    .getElementById("home-button")
-    .classList.remove("hidden");
+  document.getElementById("plateau-page").classList.remove("active");
+  document.getElementById("ranking").classList.remove("hidden");
+  document.getElementById("home-button").classList.remove("hidden");
 };
 
-/* =========================
-   RESET
-========================= */
+/* RESET */
 
 document.getElementById("reset").onclick = () => {
-
   if (confirm("Wil je jouw ranking opnieuw beginnen?")) {
-
     ranking = {};
     save();
     render();
   }
 };
 
-/* =========================
-   START WEBSITE
-========================= */
+/* START */
 
 render();
 
 </script>
-
 </body>
 </html>
