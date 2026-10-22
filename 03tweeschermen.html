@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bestelling #3 — Frietketel Gent</title>
+  <title>Bestelling #3 — De Frietketel</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     :root {
       --rood: #ee2f4e;
       --geel: #ffbd34;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     html, body {
@@ -23,9 +23,8 @@
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
       background: var(--rood);
-      color: var(--geel);
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .pagina {
@@ -35,14 +34,10 @@
       height: 100dvh;
       overflow: hidden;
       isolation: isolate;
-      background-image: url("bestelling3.png");
-      background-size: 100% 100%;
-      background-position: center;
-      background-repeat: no-repeat;
+      background: var(--rood);
     }
 
-    /* De oorspronkelijke gele strook wordt opnieuw getekend
-       zodat de woorden uit de afbeelding niet zichtbaar blijven. */
+    /* Diagonale gele strook */
     .strook {
       position: absolute;
       inset: 0;
@@ -57,12 +52,59 @@
       pointer-events: none;
     }
 
-    /* Klikzones naast de gele strook */
+    /* Titel linksboven */
+    .kop {
+      position: absolute;
+      z-index: 8;
+      top: 7.8%;
+      left: 4.3%;
+      color: var(--geel);
+    }
+
+    .kop h1 {
+      margin: 0 0 3px;
+      font-size: clamp(27px, 3.6vw, 56px);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .kop a {
+      color: var(--geel);
+      font-size: clamp(15px, 1.9vw, 29px);
+      line-height: 1.2;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .kop a:hover {
+      text-decoration: underline;
+    }
+
+    /* Terugknop bovenaan */
+    .terug {
+      position: absolute;
+      z-index: 10;
+      top: 20px;
+      right: 28px;
+      color: var(--geel);
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .terug:hover {
+      text-decoration: underline;
+    }
+
+    /* Klikbare linker- en rechterhelft */
     .klikzone {
       position: absolute;
-      inset-block: 0;
-      width: 50%;
       z-index: 2;
+      top: 0;
+      bottom: 0;
+      width: 50%;
       border: 0;
       padding: 0;
       background: transparent;
@@ -78,111 +120,96 @@
       right: 0;
     }
 
-    /* De woorden verschijnen één voor één op de strook */
+    /* Woorden op de gele strook */
     .woord {
       position: absolute;
-      z-index: 3;
-      left: 50%;
+      z-index: 4;
       top: 50%;
+      left: 50%;
       width: 90%;
-      transform: translate(-50%, -50%);
       margin: 0;
+      transform: translate(-50%, -50%);
       color: var(--rood);
       font-size: clamp(17px, 2vw, 30px);
-      line-height: 1.1;
       font-weight: 900;
       text-align: center;
       text-transform: uppercase;
       pointer-events: none;
-      opacity: 0;
-      transition: opacity 250ms ease;
-    }
-
-    .woord.zichtbaar {
       opacity: 1;
+      transition: opacity 180ms ease;
     }
 
-    /* Navigatie bovenaan */
-    .terug {
-      position: absolute;
-      top: 24px;
-      left: 28px;
-      z-index: 10;
-      color: var(--geel);
-      font-size: 16px;
-      font-weight: 800;
-      text-decoration: none;
-      text-transform: uppercase;
-      padding: 8px 0;
-    }
-
-    .terug:hover {
-      text-decoration: underline;
-    }
-
-    /* Klikbare link over de bestaande titel in de achtergrond */
-    .maps-link {
-      position: absolute;
-      top: 13.5%;
-      left: 3.5%;
-      width: 25%;
-      height: 5.5%;
-      z-index: 8;
-      display: block;
-    }
-
-    .maps-link:focus-visible,
-    .terug:focus-visible,
-    .klikzone:focus-visible {
-      outline: 3px solid white;
-      outline-offset: 4px;
-    }
-
-    .hulp {
-      position: absolute;
-      z-index: 4;
-      bottom: 3%;
-      left: 50%;
-      transform: translateX(-50%);
-      color: var(--rood);
-      font-size: 11px;
-      font-weight: 700;
-      text-align: center;
+    .woord.verdwijn {
       opacity: 0;
-      transition: opacity 250ms ease;
+    }
+
+    /* Logo rechtsonder */
+    .logo {
+      position: absolute;
+      z-index: 8;
+      right: 2.5%;
+      bottom: 5%;
+      display: flex;
+      align-items: center;
+      gap: clamp(4px, 0.7vw, 11px);
+      color: var(--geel);
+      font-size: clamp(29px, 5.4vw, 86px);
+      font-weight: 1000;
+      font-style: italic;
+      letter-spacing: -0.065em;
+      line-height: 1;
+      white-space: nowrap;
       pointer-events: none;
     }
 
-    .pagina:hover .hulp {
-      opacity: 0.75;
+    .logo i {
+      display: block;
+      width: clamp(6px, 1vw, 16px);
+      height: clamp(55px, 9.5vw, 150px);
+      flex-shrink: 0;
+      background: var(--geel);
+      transform: skew(-12deg);
     }
 
     @media (max-width: 600px) {
+      .kop {
+        top: 8%;
+        left: 4%;
+      }
+
+      .kop h1 {
+        font-size: clamp(24px, 6vw, 36px);
+      }
+
+      .kop a {
+        font-size: clamp(13px, 3.5vw, 20px);
+      }
+
       .terug {
-        top: 12px;
-        left: 16px;
-        font-size: 13px;
+        top: 15px;
+        right: 16px;
+        font-size: 12px;
       }
 
       .woord {
-        font-size: clamp(15px, 4vw, 23px);
+        font-size: clamp(14px, 3.8vw, 22px);
       }
 
-      .maps-link {
-        top: 13%;
-        left: 4%;
-        width: 40%;
-        height: 6%;
+      .logo {
+        right: 3%;
+        bottom: 4%;
+        gap: 4px;
+        font-size: clamp(27px, 7vw, 42px);
       }
 
-      .hulp {
-        font-size: 10px;
-        bottom: 2%;
+      .logo i {
+        width: 6px;
+        height: clamp(48px, 12vw, 70px);
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .woord, .hulp {
+      .woord {
         transition: none;
       }
     }
@@ -190,58 +217,71 @@
 </head>
 
 <body>
-  <main class="pagina" id="pagina" aria-label="Bestelling 3">
+  <main class="pagina">
 
+    <!-- Gele diagonale strook -->
     <div class="strook" aria-hidden="true"></div>
 
-    <a
-      class="terug"
-      href="javascript:history.back()"
-      aria-label="Terug naar de vorige pagina"
-    >← Terug</a>
+    <!-- Titel en klikbare locatie -->
+    <header class="kop">
+      <h1>BESTELLING #3</h1>
 
-    <a
-      class="maps-link"
-      href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c37169a8332305:0x2ffe68840c89c2a9?sa=X&ved=1t:8290&ictx=111"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Open Frietketel Gent in Google Maps"
-      title="Open in Google Maps"
-    ></a>
+      <a
+        href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c37169a8332305:0x2ffe68840c89c2a9?sa=X&ved=1t:8290&ictx=111"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="De Frietketel openen in Google Maps"
+      >
+        DE FRIETKETEL, GENT
+      </a>
+    </header>
 
+    <!-- Terug naar de vorige pagina -->
+    <a class="terug" href="javascript:history.back()">
+      ← TERUG
+    </a>
+
+    <!-- Klik links voor het vorige woord -->
     <button
       class="klikzone links"
       id="vorige"
       type="button"
-      aria-label="Toon het vorige woord"
+      aria-label="Vorig woord"
     ></button>
 
+    <!-- Klik rechts voor het volgende woord -->
     <button
       class="klikzone rechts"
       id="volgende"
       type="button"
-      aria-label="Toon het volgende woord"
+      aria-label="Volgend woord"
     ></button>
 
-    <p class="woord zichtbaar" id="woord" aria-live="polite">
+    <!-- De woorden verschijnen afzonderlijk -->
+    <p class="woord" id="woord" aria-live="polite">
       TOMATENKETCHUP
     </p>
 
-    <p class="hulp" aria-hidden="true">
-      Klik links of rechts om te ontdekken
-    </p>
+    <!-- Logo rechtsonder -->
+    <div class="logo" aria-label="FRIESFRIDAY">
+      <span>FR</span>
+      <i></i>
+      <span>ESFR</span>
+      <i></i>
+      <span>DAY</span>
+    </div>
 
   </main>
 
   <script>
     const woorden = [
-      "PUNTZAK",
-      "CHICKENNUGGETS",
+      "TOMATENKETCHUP",
       "VIANDEL",
-      "TOMATENKETCHUP"
+      "CHICKENNUGGETS",
+      "PUNTZAK"
     ];
 
-    let huidigWoord = 3;
+    let huidigWoord = 0;
 
     const woordElement = document.getElementById("woord");
     const vorigeKnop = document.getElementById("vorige");
@@ -250,12 +290,12 @@
     function toonWoord(index) {
       huidigWoord = (index + woorden.length) % woorden.length;
 
-      woordElement.classList.remove("zichtbaar");
+      woordElement.classList.add("verdwijn");
 
       window.setTimeout(() => {
         woordElement.textContent = woorden[huidigWoord];
-        woordElement.classList.add("zichtbaar");
-      }, 150);
+        woordElement.classList.remove("verdwijn");
+      }, 180);
     }
 
     vorigeKnop.addEventListener("click", () => {
