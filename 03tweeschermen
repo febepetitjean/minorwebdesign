@@ -1,125 +1,383 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Friesfriday – Bestelling #3</title>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@700;800&display=swap" rel="stylesheet">
-<style>
-  :root { --rood:#EF2F4E; --geel:#FFBD33; }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { height:100%; overflow:hidden; background:var(--rood); }
-  body {
-    font-family:'Futura','Jost','Century Gothic',sans-serif;
-    font-weight:800; text-transform:uppercase;
-    -webkit-user-select:none; user-select:none;
-    touch-action:pan-y; cursor:pointer;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FR/ESFR/DAY — Bestelling #3</title>
 
-  /* Gele strook */
-  .strook { position:fixed; inset:0; width:100%; height:100%; }
-  .strook.portret { display:none; }
-  @media (orientation:portrait) {
-    .strook.landschap { display:none; }
-    .strook.portret { display:block; }
-  }
-
-  /* Titel */
-  .titel { position:fixed; top:5vh; left:4.5vw; color:var(--geel); line-height:1; }
-  .titel h1 { font-size:clamp(28px,4.5vw,64px); font-weight:800; }
-  .titel p  { font-size:clamp(14px,1.8vw,26px); margin-top:.3em; }
-  @media (orientation:portrait) {
-    .titel { left:auto; right:5vw; top:4vh; }
-    .titel h1 { font-size:clamp(28px,9vw,64px); }
-    .titel p  { font-size:clamp(14px,4vw,26px); }
-  }
-
-  /* Logo */
-  .logo {
-    position:fixed; right:3.5vw; bottom:4vh;
-    color:var(--geel); font-size:clamp(28px,5.5vw,90px);
-    font-style:italic; font-weight:800; letter-spacing:-.02em; line-height:1;
-  }
-  @media (orientation:portrait) { .logo { right:auto; left:5vw; font-size:clamp(28px,12vw,90px); } }
-
-  /* Woorden op één horizontale lijn */
-  .rij {
-    position:fixed; top:50%; left:0; width:100%;
-    transform:translateY(-50%); overflow:hidden;
-  }
-  .spoor { display:flex; transition:transform .6s cubic-bezier(.65,0,.25,1); }
-  .woord {
-    flex:0 0 100vw; text-align:center; color:var(--rood);
-    font-size:clamp(18px,2.2vw,34px); font-weight:800; letter-spacing:.01em;
-  }
-  @media (orientation:portrait) { .woord { font-size:clamp(20px,6vw,40px); } }
-
-  /* Teller */
-  .teller {
-    position:fixed; bottom:2vh; left:50%; transform:translateX(-50%);
-    color:var(--geel); font-size:14px; opacity:.8; display:none;
-  }
-</style>
-</head>
-<body>
-
-<!-- Landschap (computer) -->
-<svg class="strook landschap" viewBox="0 0 2011 1178" preserveAspectRatio="xMidYMid slice">
-  <polygon points="1253,0 1978,0 773,1178 47,1178" fill="#FFBD33"/>
-</svg>
-<!-- Portret (gsm) -->
-<svg class="strook portret" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
-  <polygon points="0,0 1080,1185 1080,1920 0,728" fill="#FFBD33"/>
-</svg>
-
-<div class="titel">
-  <h1>Bestelling #3</h1>
-  <p>De Frietketel, Gent</p>
-</div>
-
-<div class="rij"><div class="spoor" id="spoor"></div></div>
-
-<div class="logo">FRIESFRIDAY</div>
-
-<script>
-  const woorden = ["Tomatenketchup", "Viandel", "Chickennuggets", "Puntzak"];
-  const spoor = document.getElementById("spoor");
-  let index = 0;
-
-  woorden.forEach(w => {
-    const el = document.createElement("div");
-    el.className = "woord";
-    el.textContent = w;
-    spoor.appendChild(el);
-  });
-
-  function toon(nieuw) {
-    index = Math.max(0, Math.min(woorden.length - 1, nieuw));
-    spoor.style.transform = `translateX(${-index * 100}vw)`;
-  }
-
-  // Klikken (muis): links = vorige, rechts = volgende
-  // Swipen (touch): naar links = volgende, naar rechts = vorige
-  let startX = null;
-  window.addEventListener("pointerdown", e => { startX = e.clientX; });
-  window.addEventListener("pointerup", e => {
-    if (startX === null) return;
-    const dx = e.clientX - startX;
-    startX = null;
-    if (e.pointerType === "mouse") {
-      toon(e.clientX > window.innerWidth / 2 ? index + 1 : index - 1);
-    } else if (Math.abs(dx) > 40) {
-      toon(dx < 0 ? index + 1 : index - 1);
+  <style>
+    :root {
+      --pink: #f32d4d;
+      --yellow: #ffbf32;
     }
-  });
 
-  // Pijltjestoetsen (extra)
-  window.addEventListener("keydown", e => {
-    if (e.key === "ArrowRight") toon(index + 1);
-    if (e.key === "ArrowLeft")  toon(index - 1);
-  });
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  toon(0);
-</script>
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--pink);
+      color: var(--yellow);
+    }
+
+    .page {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    /* De diagonale gele strook */
+    .stripe {
+      position: absolute;
+      z-index: -1;
+      inset: -60%;
+      background: linear-gradient(
+        135deg,
+        var(--pink) 0%,
+        var(--pink) 38%,
+        var(--yellow) 38%,
+        var(--yellow) 62%,
+        var(--pink) 62%,
+        var(--pink) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Titel linksboven */
+    .heading {
+      position: absolute;
+      top: 4.5%;
+      left: 4.5%;
+      z-index: 2;
+      text-transform: uppercase;
+      line-height: 0.98;
+      pointer-events: none;
+    }
+
+    .heading h1 {
+      font-size: clamp(24px, 4vw, 58px);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+    }
+
+    .heading p {
+      margin-top: 5px;
+      font-size: clamp(13px, 2vw, 30px);
+      font-weight: 900;
+    }
+
+    /* Het woord in het midden van de gele strook */
+    .word-container {
+      position: absolute;
+      inset: 20% 8% 20%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .word {
+      color: var(--pink);
+      text-transform: uppercase;
+      font-weight: 900;
+      font-size: clamp(23px, 4vw, 54px);
+      text-align: center;
+      line-height: 1;
+      white-space: nowrap;
+      letter-spacing: -1px;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .word.enter-right {
+      animation: enterRight 0.28s ease-out both;
+    }
+
+    .word.enter-left {
+      animation: enterLeft 0.28s ease-out both;
+    }
+
+    @keyframes enterRight {
+      from {
+        opacity: 0;
+        transform: translateX(65px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes enterLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-65px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* FR/ESFR/DAY onderaan */
+    .logo {
+      position: absolute;
+      bottom: 3.5%;
+      left: 3.5%;
+      z-index: 2;
+      font-size: clamp(34px, 7vw, 100px);
+      font-weight: 1000;
+      font-style: italic;
+      letter-spacing: -3px;
+      line-height: 1;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .logo .slash {
+      display: inline-block;
+      font-weight: 400;
+      transform: skew(-12deg);
+      margin: 0 0.02em;
+    }
+
+    /* Onzichtbare klikzones links en rechts */
+    .nav {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      z-index: 5;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav.left {
+      left: 0;
+      cursor: w-resize;
+    }
+
+    .nav.right {
+      right: 0;
+      cursor: e-resize;
+    }
+
+    .nav:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: -8px;
+    }
+
+    /* Kleine voortgangsindicator */
+    .progress {
+      position: absolute;
+      right: 4.5%;
+      bottom: 5%;
+      z-index: 3;
+      font-size: 14px;
+      font-weight: 800;
+      pointer-events: none;
+    }
+
+    /* Liggend scherm: diagonale strook zoals op de tweede mock-up */
+    @media (orientation: landscape) {
+      .stripe {
+        background: linear-gradient(
+          45deg,
+          var(--pink) 0%,
+          var(--pink) 38%,
+          var(--yellow) 38%,
+          var(--yellow) 62%,
+          var(--pink) 62%,
+          var(--pink) 100%
+        );
+      }
+
+      .heading {
+        top: 8%;
+        left: 4.3%;
+      }
+
+      .word-container {
+        inset: 15% 8%;
+      }
+
+      .logo {
+        left: auto;
+        right: 3%;
+        bottom: 5%;
+      }
+    }
+
+    /* Rechtopstaand scherm: mobiel */
+    @media (orientation: portrait) {
+      .stripe {
+        inset: -50%;
+      }
+
+      .heading {
+        top: 4%;
+        left: 5%;
+      }
+
+      .word-container {
+        inset: 22% 4% 25%;
+      }
+
+      .word {
+        font-size: clamp(20px, 6vw, 44px);
+        letter-spacing: -0.7px;
+        white-space: normal;
+        max-width: 100%;
+      }
+
+      .logo {
+        left: 4%;
+        bottom: 3%;
+        font-size: clamp(35px, 9vw, 76px);
+        letter-spacing: -2px;
+      }
+
+      .progress {
+        right: 5%;
+        bottom: 5%;
+        font-size: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .word.enter-right,
+      .word.enter-left {
+        animation-duration: 0.01ms;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <div class="stripe"></div>
+
+    <header class="heading">
+      <h1>Bestelling #3</h1>
+      <p>De Frietketel, Gent</p>
+    </header>
+
+    <section class="word-container" aria-live="polite">
+      <div class="word" id="word">TOMATENKETCHUP</div>
+    </section>
+
+    <div class="logo" aria-label="FR ESFR DAY">
+      FR<span class="slash">/</span>ESFR<span class="slash">/</span>DAY
+    </div>
+
+    <div class="progress" id="progress">01 / 04</div>
+
+    <button class="nav left"
+      id="previous"
+      aria-label="Vorig woord"></button>
+
+    <button class="nav right"
+      id="next"
+      aria-label="Volgend woord"></button>
+
+  </main>
+
+  <script>
+    const words = [
+      "TOMATENKETCHUP",
+      "VIANDEL",
+      "CHICKENNUGGETS",
+      "PUNTZAK"
+    ];
+
+    let currentIndex = 0;
+
+    const wordElement = document.getElementById("word");
+    const progressElement = document.getElementById("progress");
+
+    function showWord(direction) {
+      // Animatie opnieuw starten
+      wordElement.classList.remove("enter-left", "enter-right");
+      void wordElement.offsetWidth;
+
+      // Update het huidige woord
+      wordElement.textContent = words[currentIndex];
+
+      // Animatie volgens de navigatierichting
+      wordElement.classList.add(
+        direction === "right" ? "enter-right" : "enter-left"
+      );
+
+      // Update de teller
+      const number = String(currentIndex + 1).padStart(2, "0");
+      const total = String(words.length).padStart(2, "0");
+      progressElement.textContent = `${number} / ${total}`;
+    }
+
+    function nextWord() {
+      if (currentIndex < words.length - 1) {
+        currentIndex++;
+        showWord("right");
+      }
+    }
+
+    function previousWord() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        showWord("left");
+      }
+    }
+
+    // Klikken op de linker- en rechterhelft
+    document.getElementById("next").addEventListener("click", nextWord);
+    document.getElementById("previous").addEventListener("click", previousWord);
+
+    // Navigeren met de pijltjestoetsen
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") nextWord();
+      if (event.key === "ArrowLeft") previousWord();
+    });
+
+    // Swipen op een touchscreen
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    document.addEventListener("touchstart", (event) => {
+      touchStartX = event.changedTouches[0].clientX;
+      touchStartY = event.changedTouches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener("touchend", (event) => {
+      const touchEndX = event.changedTouches[0].clientX;
+      const touchEndY = event.changedTouches[0].clientY;
+
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      // Alleen horizontale swipes tellen mee
+      if (Math.abs(deltaX) > 45 &&
+          Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX < 0) {
+          nextWord();
+        } else {
+          previousWord();
+        }
+      }
+    }, { passive: true });
+  </script>
 </body>
 </html>
