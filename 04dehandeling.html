@@ -3,7 +3,7 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <title>FRIES FRIDAY — TIERLIST</title>
 
@@ -21,52 +21,90 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
   margin: 0;
   min-height: 100%;
+  width: 100%;
 }
 
 body {
   background: var(--pink);
   color: var(--yellow);
-  font-family: 'Jost', sans-serif;
+  font-family: "Jost", sans-serif;
   font-weight: 800;
+  overflow-x: hidden;
 }
 
 button {
-  font-family: inherit;
+  font: inherit;
   cursor: pointer;
 }
 
-/* TERUG NAAR INDEX */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ==================================
+   TERUGKNOPPEN
+================================== */
 
 .back-home,
 .back-plateau {
   position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 20;
+  top: max(20px, env(safe-area-inset-top));
+  left: max(20px, env(safe-area-inset-left));
+  z-index: 50;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   padding: 10px 23px;
+  border: none;
+
   background: var(--yellow);
   color: var(--pink);
-  border: none;
-  font-size: 17px;
-  font-weight: 900;
+
   text-decoration: none;
+  font-size: 16px;
+  font-weight: 900;
+
+  transition: transform .2s ease;
 }
 
-/* HOOFDSCHERM */
+.back-home:hover,
+.back-plateau:hover {
+  transform: translateX(-5px);
+}
+
+/* ==================================
+   DESKTOP — HOOFDINDELING
+================================== */
 
 #ranking {
   min-height: 100vh;
+  min-height: 100dvh;
+
   display: grid;
-  grid-template-columns: minmax(155px, 22%) minmax(0, 1fr);
+  grid-template-columns:
+    minmax(155px, 22%)
+    minmax(0, 1fr);
+
   column-gap: clamp(25px, 5vw, 90px);
   align-items: center;
+
   padding: 90px 4vw 35px 0;
 }
 
-/* CATEGORIEËN LINKS */
+/* ==================================
+   CATEGORIEËN LINKS
+================================== */
 
 #tiers {
   display: flex;
@@ -85,12 +123,18 @@ button {
   width: 100%;
   min-height: clamp(52px, 7vh, 70px);
   padding: 5px;
+
   background: var(--yellow);
   color: var(--pink);
   border: none;
+
   font-size: clamp(18px, 2vw, 31px);
   font-weight: 900;
-  transition: transform .2s;
+  text-align: center;
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
 }
 
 .tier-label:hover {
@@ -101,17 +145,22 @@ button {
   min-height: 25px;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 5px;
+
   padding: 3px 5px;
   border-radius: 7px;
 }
 
-/* SNACKS RECHTS */
+/* ==================================
+   LOSSE SNACKS RECHTS
+================================== */
 
 #right-side {
   min-width: 0;
   width: 100%;
   align-self: center;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -123,58 +172,83 @@ button {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
   justify-items: center;
+
   gap: clamp(5px, 1.2vh, 15px) 8px;
+
   width: 100%;
   min-height: 300px;
   padding: 10px;
+
   border-radius: 8px;
 }
 
-/* FOTO'S */
+/* ==================================
+   SNACKFOTO'S
+================================== */
 
 .snack {
   display: block;
   width: 100%;
   max-width: 125px;
   height: clamp(65px, 10vh, 105px);
+
   object-fit: contain;
+
   cursor: grab;
   user-select: none;
   touch-action: none;
   -webkit-user-drag: none;
-  filter: drop-shadow(4px 6px 4px rgba(0,0,0,.22));
-  transition: transform .2s;
+
+  filter: drop-shadow(
+    4px 6px 4px rgba(0,0,0,.22)
+  );
+
+  transition:
+    transform .2s ease,
+    opacity .2s ease;
 }
 
 .snack:hover {
   transform: scale(1.12) rotate(-4deg);
 }
 
+.snack:active {
+  cursor: grabbing;
+}
+
 .snack.dragging {
   opacity: .25;
 }
+
+/* Foto's die al ingedeeld zijn */
 
 .tier-items .snack {
   width: 65px;
   height: 55px;
 }
 
-/* ALS EEN FOTO ONTBREEKT */
+/* ==================================
+   ALS EEN FOTO ONTBREEKT
+================================== */
 
 .snack-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 100%;
   max-width: 125px;
   min-height: 65px;
   padding: 8px;
+
   background: var(--yellow);
   color: var(--pink);
   border-radius: 7px;
+
   font-size: 13px;
   text-align: center;
   line-height: 1.2;
+
   cursor: grab;
   user-select: none;
   touch-action: none;
@@ -186,22 +260,77 @@ button {
   font-size: 10px;
 }
 
+/* ==================================
+   SLEEP- EN SELECTIE-EFFECTEN
+================================== */
+
 .drop-active {
   background: rgba(255,190,54,.15);
   outline: 2px dashed var(--yellow);
   outline-offset: -2px;
 }
 
-/* RESET */
+.selected-snack {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+  border-radius: 8px;
+
+  transform: scale(1.08);
+}
+
+.tier-label.selected-target {
+  box-shadow: 0 0 0 4px rgba(255,190,54,.35);
+}
+
+.floating {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+
+  width: 135px;
+  height: 120px;
+  object-fit: contain;
+
+  transform: translate(-50%, -50%);
+
+  filter: drop-shadow(
+    5px 8px 5px rgba(0,0,0,.3)
+  );
+}
+
+.floating-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--yellow);
+  color: var(--pink);
+  border-radius: 8px;
+
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* ==================================
+   RESET
+================================== */
 
 .reset {
   align-self: flex-start;
+
   background: transparent;
   color: var(--yellow);
   border: 2px solid var(--yellow);
+
   padding: 9px 18px;
+
   font-size: 13px;
   font-weight: 900;
+
+  transition:
+    background .2s ease,
+    color .2s ease;
 }
 
 .reset:hover {
@@ -209,11 +338,15 @@ button {
   color: var(--pink);
 }
 
-/* PLATEAU SCHERM */
+/* ==================================
+   PLATEAUSCHERM
+================================== */
 
 #plateau-page {
   display: none;
   min-height: 100vh;
+  min-height: 100dvh;
+
   padding: 35px;
   text-align: center;
 }
@@ -229,6 +362,7 @@ button {
 
 .plateau-title {
   margin: 75px 0 0;
+
   font-size: clamp(55px, 9vw, 145px);
   font-weight: 900;
   line-height: 1;
@@ -239,33 +373,49 @@ button {
   font-size: clamp(16px, 2vw, 28px);
 }
 
+/* Het frituurplateau */
+
 .plateau {
   width: min(88vw, 950px);
   min-height: 450px;
+
   margin: 20px auto;
   padding: 50px;
+
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   align-content: center;
   justify-content: center;
   gap: 8px;
+
   background: #F5EEDF;
+
   border: 20px solid #E7E0D1;
   border-radius: 38px;
+
   box-shadow:
     inset 0 0 0 5px #D8D0C1,
     14px 18px 0 rgba(0,0,0,.15);
+
   transform: rotate(-1deg);
 }
+
+/* Foto's op plateau */
 
 .plateau-snack {
   width: clamp(110px, 17vw, 195px);
   height: 150px;
+
   object-fit: contain;
+
   transform: rotate(var(--rotation));
-  filter: drop-shadow(5px 9px 5px rgba(0,0,0,.22));
-  transition: transform .25s;
+
+  filter: drop-shadow(
+    5px 9px 5px rgba(0,0,0,.22)
+  );
+
+  transition: transform .25s ease;
 }
 
 .plateau-snack:hover {
@@ -277,14 +427,18 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 150px;
   min-height: 100px;
   padding: 15px;
+
   background: var(--yellow);
   color: var(--pink);
   border-radius: 12px;
+
   font-size: 18px;
   text-align: center;
+
   transform: rotate(var(--rotation));
 }
 
@@ -293,83 +447,248 @@ button {
   font-size: 25px;
 }
 
-/* SLEEPFOTO */
+/* ==================================
+   TABLET
+================================== */
 
-.floating {
-  position: fixed;
-  z-index: 9999;
-  pointer-events: none;
-  width: 135px;
-  height: 120px;
-  object-fit: contain;
-  transform: translate(-50%, -50%);
-  filter: drop-shadow(5px 8px 5px rgba(0,0,0,.3));
-}
+@media (max-width: 1000px) and (min-width: 701px) {
 
-.floating-text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--yellow);
-  color: var(--pink);
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 16px;
-  text-align: center;
-}
-
-/* KLEINERE SCHERMEN */
-
-@media (max-width: 800px) {
   #ranking {
-    grid-template-columns: 125px minmax(0, 1fr);
-    column-gap: 12px;
-    padding: 85px 12px 25px 0;
-  }
+    grid-template-columns:
+      minmax(150px, 24%)
+      minmax(0, 1fr);
 
-  .tier-label {
-    font-size: 16px;
-    min-height: 52px;
+    column-gap: 24px;
+    padding: 90px 24px 35px 0;
   }
 
   #pool {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 5px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .snack {
-    height: 70px;
+    height: clamp(65px, 8vh, 95px);
+  }
+
+  .tier-label {
+    font-size: clamp(17px, 2.2vw, 25px);
+  }
+}
+
+/* ==================================
+   GSM — ANDERE LEZING VAN DE PAGINA
+================================== */
+
+@media (max-width: 700px) {
+
+  #ranking {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    gap: 25px;
+
+    min-height: 100dvh;
+
+    padding:
+      calc(80px + env(safe-area-inset-top))
+      15px
+      calc(45px + env(safe-area-inset-bottom));
+  }
+
+  /* Eerst de snacks */
+
+  #right-side {
+    order: -1;
+    width: 100%;
+    align-self: stretch;
+    gap: 15px;
+  }
+
+  #pool {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    justify-items: center;
+    align-items: center;
+
+    gap: 9px 5px;
+
+    width: 100%;
+    min-height: 0;
+    padding: 10px 0;
+  }
+
+  .snack {
+    width: 100%;
+    max-width: 85px;
+    height: 65px;
+  }
+
+  .snack-placeholder {
+    width: 100%;
+    min-height: 55px;
+    padding: 5px;
+    font-size: 10px;
+  }
+
+  /* Daarna de categorieën */
+
+  #tiers {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .tier {
+    display: grid;
+    grid-template-columns:
+      minmax(115px, 36%)
+      minmax(0, 1fr);
+
+    align-items: center;
+    gap: 12px;
+    min-height: 75px;
+  }
+
+  .tier-label {
+    min-height: 65px;
+    padding: 6px;
+    font-size: clamp(15px, 4vw, 21px);
+  }
+
+  .tier-items {
+    min-height: 65px;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+
+    padding: 5px;
   }
 
   .tier-items .snack {
-    width: 48px;
-    height: 45px;
+    width: 55px;
+    height: 55px;
+  }
+
+  .tier-items .snack-placeholder {
+    width: 65px;
+    min-height: 45px;
+    font-size: 9px;
+  }
+
+  /* Resetknop */
+
+  .reset {
+    align-self: flex-start;
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+
+  /* Terugknoppen */
+
+  .back-home,
+  .back-plateau {
+    top: calc(15px + env(safe-area-inset-top));
+    left: calc(15px + env(safe-area-inset-left));
+
+    padding: 9px 16px;
+    font-size: 14px;
+  }
+
+  /* Plateau op gsm */
+
+  #plateau-page {
+    padding:
+      calc(80px + env(safe-area-inset-top))
+      15px
+      30px;
+  }
+
+  .plateau-title {
+    margin-top: 25px;
+    font-size: clamp(42px, 12vw, 75px);
+    overflow-wrap: anywhere;
+  }
+
+  .plateau-subtitle {
+    font-size: 15px;
+    margin: 12px 0 25px;
   }
 
   .plateau {
     width: 100%;
-    min-height: 330px;
-    padding: 20px;
+    min-height: 320px;
+
+    padding: 20px 10px;
     border-width: 12px;
+    border-radius: 25px;
   }
 
   .plateau-snack {
-    width: 110px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
+  }
+
+  .snack-fallback {
+    width: 90px;
+    min-height: 70px;
+    font-size: 12px;
+  }
+
+  .floating {
+    width: 90px;
+    height: 90px;
   }
 }
 
-@media (max-width: 480px) {
-  #pool {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* ==================================
+   EXTRA KLEINE GSM
+================================== */
+
+@media (max-width: 380px) {
+
+  #ranking {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
-  .snack {
-    height: 65px;
+  #pool {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tier {
+    grid-template-columns:
+      110px
+      minmax(0, 1fr);
+
+    gap: 8px;
   }
 
   .tier-label {
     font-size: 14px;
+  }
+
+  .tier-items .snack {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+/* Minder animaties indien ingesteld */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 </style>
@@ -377,23 +696,39 @@ button {
 
 <body>
 
-<a href="index.html" class="back-home" id="home-button">
+<!-- TERUG NAAR STARTPAGINA -->
+
+<a
+  href="index.html"
+  class="back-home"
+  id="home-button"
+>
   ← TERUG
 </a>
+
+<!-- TIERLIST -->
 
 <main id="ranking">
 
   <div id="tiers"></div>
 
   <div id="right-side">
-    <div id="pool" data-category="pool"></div>
+
+    <div
+      id="pool"
+      data-category="pool"
+      aria-label="Nog niet ingedeelde snacks"
+    ></div>
 
     <button class="reset" id="reset">
       RESET RANKING
     </button>
+
   </div>
 
 </main>
+
+<!-- PLATEAU -->
 
 <section id="plateau-page">
 
@@ -415,7 +750,9 @@ button {
 
 <script>
 
-/* CATEGORIEËN */
+/* ==================================
+   CATEGORIEËN
+================================== */
 
 const categories = [
   "GODLIKE",
@@ -427,7 +764,9 @@ const categories = [
   "TRASH"
 ];
 
-/* SNACKS */
+/* ==================================
+   SNACKS
+================================== */
 
 const snacks = [
   "curryworst",
@@ -457,9 +796,12 @@ const snacks = [
   "lucifers"
 ];
 
-/* FOTO BESTANDSNAMEN */
+/* ==================================
+   FOTO BESTANDSNAMEN
+================================== */
 
 function snackImagePath(name) {
+
   const filename = name
     .toLowerCase()
     .normalize("NFD")
@@ -470,32 +812,51 @@ function snackImagePath(name) {
   return "snacks/" + filename + ".png";
 }
 
-/* OPSLAG */
+/* ==================================
+   OPSLAG
+================================== */
 
 const storageKey = "friesfriday-ranking-v3";
 
 let ranking = {};
 
 try {
-  ranking = JSON.parse(localStorage.getItem(storageKey)) || {};
+  ranking =
+    JSON.parse(localStorage.getItem(storageKey)) || {};
 } catch {
   ranking = {};
 }
 
 function save() {
   try {
-    localStorage.setItem(storageKey, JSON.stringify(ranking));
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify(ranking)
+    );
   } catch (error) {
     console.warn("Opslaan niet gelukt:", error);
   }
 }
 
+/* ==================================
+   ELEMENTEN
+================================== */
+
 const tiers = document.getElementById("tiers");
 const pool = document.getElementById("pool");
+const rankingPage = document.getElementById("ranking");
+const plateauPage = document.getElementById("plateau-page");
+const homeButton = document.getElementById("home-button");
 
-/* SNACKFOTO MAKEN */
+let selectedSnack = null;
+let drag = null;
+
+/* ==================================
+   SNACK MAKEN
+================================== */
 
 function createSnack(name) {
+
   const img = document.createElement("img");
 
   img.className = "snack";
@@ -508,40 +869,99 @@ function createSnack(name) {
   img.addEventListener("pointerdown", startDrag);
 
   img.onerror = () => {
+
     const fallback = document.createElement("div");
+
     fallback.className = "snack-placeholder";
     fallback.textContent = name;
     fallback.title = name;
     fallback.dataset.snack = name;
+
     fallback.addEventListener("pointerdown", startDrag);
+
     img.replaceWith(fallback);
   };
 
   return img;
 }
 
-/* RENDER */
+/* ==================================
+   SELECTIE TONEN OP GSM
+================================== */
+
+function updateSelection() {
+
+  document.querySelectorAll(
+    ".snack, .snack-placeholder"
+  ).forEach(el => {
+
+    el.classList.toggle(
+      "selected-snack",
+      el.dataset.snack === selectedSnack
+    );
+  });
+}
+
+function selectSnack(name) {
+
+  selectedSnack =
+    selectedSnack === name ? null : name;
+
+  updateSelection();
+}
+
+/* ==================================
+   RENDER
+================================== */
 
 function render() {
+
   tiers.innerHTML = "";
   pool.innerHTML = "";
 
   categories.forEach(category => {
+
     const row = document.createElement("div");
     row.className = "tier";
 
     const label = document.createElement("button");
     label.className = "tier-label";
     label.textContent = category;
-    label.onclick = () => openPlateau(category);
+
+    label.addEventListener("click", () => {
+
+      /* Op gsm: geselecteerde snack indelen */
+
+      if (window.innerWidth <= 700 && selectedSnack) {
+        moveSnack(selectedSnack, category);
+        selectedSnack = null;
+        updateSelection();
+        return;
+      }
+
+      /* Anders: plateau bekijken */
+
+      openPlateau(category);
+    });
 
     const area = document.createElement("div");
     area.className = "tier-items";
     area.dataset.category = category;
 
+    area.addEventListener("click", () => {
+
+      if (window.innerWidth <= 700 && selectedSnack) {
+        moveSnack(selectedSnack, category);
+        selectedSnack = null;
+        updateSelection();
+      }
+    });
+
     snacks
       .filter(name => ranking[name] === category)
-      .forEach(name => area.appendChild(createSnack(name)));
+      .forEach(name => {
+        area.appendChild(createSnack(name));
+      });
 
     row.append(label, area);
     tiers.appendChild(row);
@@ -549,33 +969,47 @@ function render() {
 
   snacks
     .filter(name => !categories.includes(ranking[name]))
-    .forEach(name => pool.appendChild(createSnack(name)));
+    .forEach(name => {
+      pool.appendChild(createSnack(name));
+    });
+
+  updateSelection();
 }
 
-/* SNACK VERPLAATSEN */
+/* ==================================
+   SNACK VERPLAATSEN
+================================== */
 
 function moveSnack(name, category) {
+
   if (category === "pool") {
     delete ranking[name];
   } else {
     ranking[name] = category;
   }
 
+  selectedSnack = null;
+
   save();
   render();
 }
 
-/* DRAG & DROP */
-
-let drag = null;
+/* ==================================
+   SLEPEN — START
+================================== */
 
 function startDrag(e) {
+
   if (e.button !== 0) return;
+
   e.preventDefault();
+
+  if (drag) return;
 
   const original = e.currentTarget;
 
   drag = {
+    pointerId: e.pointerId,
     name: original.dataset.snack,
     original,
     startX: e.clientX,
@@ -585,40 +1019,53 @@ function startDrag(e) {
   };
 
   original.setPointerCapture(e.pointerId);
+
   original.addEventListener("pointermove", onDrag);
   original.addEventListener("pointerup", endDrag);
   original.addEventListener("pointercancel", cancelDrag);
 }
 
+/* ==================================
+   SLEPEN — BEWEGEN
+================================== */
+
 function onDrag(e) {
-  if (!drag) return;
+
+  if (!drag || e.pointerId !== drag.pointerId) return;
 
   const distance = Math.hypot(
     e.clientX - drag.startX,
     e.clientY - drag.startY
   );
 
-  if (!drag.moved && distance < 6) return;
+  if (!drag.moved && distance < 7) return;
 
   if (!drag.moved) {
+
     drag.moved = true;
 
     const ghost = document.createElement("img");
+
     ghost.className = "floating";
     ghost.src = snackImagePath(drag.name);
     ghost.alt = drag.name;
 
     ghost.onerror = () => {
+
       const fallback = document.createElement("div");
+
       fallback.className = "floating floating-text";
       fallback.textContent = drag.name;
+
       fallback.style.left = ghost.style.left;
       fallback.style.top = ghost.style.top;
+
       ghost.replaceWith(fallback);
       drag.ghost = fallback;
     };
 
     drag.ghost = ghost;
+
     document.body.appendChild(ghost);
     drag.original.classList.add("dragging");
   }
@@ -626,17 +1073,30 @@ function onDrag(e) {
   drag.ghost.style.left = e.clientX + "px";
   drag.ghost.style.top = e.clientY + "px";
 
-  document.querySelectorAll(".drop-active").forEach(el => {
-    el.classList.remove("drop-active");
-  });
+  document.querySelectorAll(
+    ".drop-active"
+  ).forEach(el => el.classList.remove("drop-active"));
 
-  const target = document.elementFromPoint(e.clientX, e.clientY);
-  const zone = target?.closest(".tier-items, #pool, .tier-label");
+  const target = document.elementFromPoint(
+    e.clientX,
+    e.clientY
+  );
 
-  if (zone) zone.classList.add("drop-active");
+  const zone = target?.closest(
+    ".tier-items, #pool, .tier-label"
+  );
+
+  if (zone) {
+    zone.classList.add("drop-active");
+  }
 }
 
+/* ==================================
+   SLEPEN — OPRUIMEN
+================================== */
+
 function cleanupDrag() {
+
   if (!drag) return;
 
   drag.original.classList.remove("dragging");
@@ -646,77 +1106,153 @@ function cleanupDrag() {
   drag.original.removeEventListener("pointerup", endDrag);
   drag.original.removeEventListener("pointercancel", cancelDrag);
 
-  document.querySelectorAll(".drop-active").forEach(el => {
-    el.classList.remove("drop-active");
-  });
+  document.querySelectorAll(
+    ".drop-active"
+  ).forEach(el => el.classList.remove("drop-active"));
 
   drag = null;
 }
 
+/* ==================================
+   SLEPEN — LOSLATEN
+================================== */
+
 function endDrag(e) {
-  if (!drag) return;
+
+  if (!drag || e.pointerId !== drag.pointerId) return;
 
   const name = drag.name;
   const moved = drag.moved;
 
-  const target = document.elementFromPoint(e.clientX, e.clientY);
-  const zone = target?.closest(".tier-items, #pool, .tier-label");
+  const target = document.elementFromPoint(
+    e.clientX,
+    e.clientY
+  );
+
+  const zone = target?.closest(
+    ".tier-items, #pool, .tier-label"
+  );
 
   let category = null;
 
   if (zone) {
+
     if (zone.id === "pool") {
       category = "pool";
-    } else if (zone.classList.contains("tier-items")) {
+    }
+
+    else if (zone.classList.contains("tier-items")) {
       category = zone.dataset.category;
-    } else if (zone.classList.contains("tier-label")) {
+    }
+
+    else if (zone.classList.contains("tier-label")) {
       category = zone.textContent.trim();
     }
   }
 
   cleanupDrag();
 
-  if (moved && category) moveSnack(name, category);
+  if (moved && category) {
+
+    moveSnack(name, category);
+
+  } else if (!moved && window.innerWidth <= 700) {
+
+    /* Op gsm: een tik selecteert de snack */
+
+    selectSnack(name);
+  }
 }
 
-function cancelDrag() {
-  cleanupDrag();
+function cancelDrag(e) {
+  if (drag && e.pointerId === drag.pointerId) {
+    cleanupDrag();
+  }
 }
 
-/* PLATEAU */
+/* ==================================
+   OP GSM: TERUG NAAR LOSSE SNACKS
+================================== */
+
+pool.addEventListener("click", (e) => {
+
+  if (window.innerWidth > 700) return;
+  if (!selectedSnack) return;
+
+  /* Een tik op een andere snack mag niet
+     meteen de geselecteerde snack verplaatsen */
+
+  if (e.target.closest(
+    ".snack, .snack-placeholder"
+  )) return;
+
+  moveSnack(selectedSnack, "pool");
+});
+
+/* ==================================
+   PLATEAU OPENEN
+================================== */
 
 function openPlateau(category) {
-  document.getElementById("ranking").classList.add("hidden");
-  document.getElementById("home-button").classList.add("hidden");
-  document.getElementById("plateau-page").classList.add("active");
-  document.getElementById("plateau-title").textContent = category;
+
+  selectedSnack = null;
+  updateSelection();
+
+  rankingPage.classList.add("hidden");
+  homeButton.classList.add("hidden");
+  plateauPage.classList.add("active");
+
+  document.getElementById(
+    "plateau-title"
+  ).textContent = category;
 
   const plateau = document.getElementById("plateau");
+
   plateau.innerHTML = "";
 
-  const selected = snacks.filter(name => ranking[name] === category);
+  const selected = snacks.filter(
+    name => ranking[name] === category
+  );
 
   if (selected.length === 0) {
+
     const empty = document.createElement("p");
+
     empty.className = "empty";
     empty.textContent = "Nog geen snacks op dit plateau!";
+
     plateau.appendChild(empty);
+
   } else {
+
     selected.forEach((name, index) => {
+
       const img = document.createElement("img");
+
       img.className = "plateau-snack";
       img.src = snackImagePath(name);
       img.alt = name;
       img.title = name;
 
       const rotation = ((index * 11) % 25) - 12;
-      img.style.setProperty("--rotation", rotation + "deg");
+
+      img.style.setProperty(
+        "--rotation",
+        rotation + "deg"
+      );
 
       img.onerror = () => {
+
         const fallback = document.createElement("div");
+
         fallback.className = "snack-fallback";
         fallback.textContent = name;
-        fallback.style.setProperty("--rotation", rotation + "deg");
+
+        fallback.style.setProperty(
+          "--rotation",
+          rotation + "deg"
+        );
+
         img.replaceWith(fallback);
       };
 
@@ -727,25 +1263,38 @@ function openPlateau(category) {
   window.scrollTo(0, 0);
 }
 
-/* TERUG NAAR TIERLIST */
+/* ==================================
+   TERUG NAAR TIERLIST
+================================== */
 
 document.getElementById("back").onclick = () => {
-  document.getElementById("plateau-page").classList.remove("active");
-  document.getElementById("ranking").classList.remove("hidden");
-  document.getElementById("home-button").classList.remove("hidden");
+
+  plateauPage.classList.remove("active");
+  rankingPage.classList.remove("hidden");
+  homeButton.classList.remove("hidden");
+
+  window.scrollTo(0, 0);
 };
 
-/* RESET */
+/* ==================================
+   RESET
+================================== */
 
 document.getElementById("reset").onclick = () => {
+
   if (confirm("Wil je jouw ranking opnieuw beginnen?")) {
+
     ranking = {};
+    selectedSnack = null;
+
     save();
     render();
   }
 };
 
-/* START */
+/* ==================================
+   START
+================================== */
 
 render();
 
