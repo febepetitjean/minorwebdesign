@@ -1,320 +1,627 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bestelling #3 — De Frietketel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bestelling #3 | Friesfriday</title>
 
-  <style>
-    :root {
-      --rood: #ee2f4e;
-      --geel: #ffbd34;
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@600;700;800;900&display=swap" rel="stylesheet">
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+:root {
+  --rood: #EF2F4F;
+  --geel: #FFBE35;
+}
 
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      background: var(--rood);
-      font-family: Arial, Helvetica, sans-serif;
-    }
+html {
+  scroll-behavior: smooth;
+}
 
-    .pagina {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
-      isolation: isolate;
-      background: var(--rood);
-    }
+body {
+  margin: 0;
+  background: var(--rood);
+  font-family: 'Jost', sans-serif;
+  overflow-x: hidden;
+}
 
-    /* Diagonale gele strook */
-    .strook {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      background: var(--geel);
-      clip-path: polygon(
-        62.1% 0,
-        98.1% 0,
-        39.1% 100%,
-        2.2% 100%
-      );
-      pointer-events: none;
-    }
+a {
+  color: inherit;
+}
 
-    /* Titel linksboven */
-    .kop {
-      position: absolute;
-      z-index: 8;
-      top: 7.8%;
-      left: 4.3%;
-      color: var(--geel);
-    }
+/* =========================
+   DESKTOP
+========================= */
 
-    .kop h1 {
-      margin: 0 0 3px;
-      font-size: clamp(27px, 3.6vw, 56px);
-      line-height: 1.05;
-      font-weight: 900;
-      letter-spacing: -1px;
-    }
+.desktop {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  background: var(--rood);
+}
 
-    .kop a {
-      color: var(--geel);
-      font-size: clamp(15px, 1.9vw, 29px);
-      line-height: 1.2;
-      font-weight: 900;
-      text-decoration: none;
-    }
+/* Gele diagonale strook */
 
-    .kop a:hover {
-      text-decoration: underline;
-    }
+.diagonaal {
+  position: absolute;
+  inset: 0;
+  background: var(--geel);
+  clip-path: polygon(
+    62% 0,
+    98% 0,
+    39% 100%,
+    2% 100%
+  );
+  z-index: 1;
+}
 
-    /* Terugknop bovenaan */
-    .terug {
-      position: absolute;
-      z-index: 10;
-      top: 20px;
-      right: 28px;
-      color: var(--geel);
-      font-size: 15px;
-      font-weight: 800;
-      text-decoration: none;
-      text-transform: uppercase;
-    }
+/* Titel linksboven */
 
-    .terug:hover {
-      text-decoration: underline;
-    }
+.titel {
+  position: absolute;
+  top: 8%;
+  left: 4.3%;
+  z-index: 5;
+  color: var(--geel);
+}
 
-    /* Klikbare linker- en rechterhelft */
-    .klikzone {
-      position: absolute;
-      z-index: 2;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      border: 0;
-      padding: 0;
-      background: transparent;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
+.titel h1 {
+  font-size: clamp(30px, 3.5vw, 58px);
+  font-weight: 900;
+  line-height: 1;
+  margin: 0;
+}
 
-    .klikzone.links {
-      left: 0;
-    }
+.titel a {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: clamp(17px, 1.8vw, 30px);
+  font-weight: 900;
+  text-decoration: none;
+}
 
-    .klikzone.rechts {
-      right: 0;
-    }
+.titel a:hover {
+  text-decoration: underline;
+}
 
-    /* Woorden op de gele strook */
-    .woord {
-      position: absolute;
-      z-index: 4;
-      top: 50%;
-      left: 50%;
-      width: 90%;
-      margin: 0;
-      transform: translate(-50%, -50%);
-      color: var(--rood);
-      font-size: clamp(17px, 2vw, 30px);
-      font-weight: 900;
-      text-align: center;
-      text-transform: uppercase;
-      pointer-events: none;
-      opacity: 1;
-      transition: opacity 180ms ease;
-    }
+/* Terugknop */
 
-    .woord.verdwijn {
-      opacity: 0;
-    }
+.terug {
+  position: absolute;
+  top: 28px;
+  right: 35px;
+  z-index: 10;
+  color: var(--geel);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 900;
+}
 
-    /* Logo rechtsonder */
-    .logo {
-      position: absolute;
-      z-index: 8;
-      right: 2.5%;
-      bottom: 5%;
-      display: flex;
-      align-items: center;
-      gap: clamp(4px, 0.7vw, 11px);
-      color: var(--geel);
-      font-size: clamp(29px, 5.4vw, 86px);
-      font-weight: 1000;
-      font-style: italic;
-      letter-spacing: -0.065em;
-      line-height: 1;
-      white-space: nowrap;
-      pointer-events: none;
-    }
+.terug:hover {
+  text-decoration: underline;
+}
 
-    .logo i {
-      display: block;
-      width: clamp(6px, 1vw, 16px);
-      height: clamp(55px, 9.5vw, 150px);
-      flex-shrink: 0;
-      background: var(--geel);
-      transform: skew(-12deg);
-    }
+/* Klikzones */
 
-    @media (max-width: 600px) {
-      .kop {
-        top: 8%;
-        left: 4%;
-      }
+.klikzone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 2;
+}
 
-      .kop h1 {
-        font-size: clamp(24px, 6vw, 36px);
-      }
+.links {
+  left: 0;
+}
 
-      .kop a {
-        font-size: clamp(13px, 3.5vw, 20px);
-      }
+.rechts {
+  right: 0;
+}
 
-      .terug {
-        top: 15px;
-        right: 16px;
-        font-size: 12px;
-      }
+/* Woord op de strook */
 
-      .woord {
-        font-size: clamp(14px, 3.8vw, 22px);
-      }
+.woord-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  width: 90%;
+  text-align: center;
+  pointer-events: none;
+}
 
-      .logo {
-        right: 3%;
-        bottom: 4%;
-        gap: 4px;
-        font-size: clamp(27px, 7vw, 42px);
-      }
+.woord {
+  font-size: clamp(25px, 3vw, 52px);
+  font-weight: 900;
+  color: var(--rood);
+  line-height: 1.1;
+  margin: 0;
+  transition:
+    opacity .25s ease,
+    transform .25s ease;
+}
 
-      .logo i {
-        width: 6px;
-        height: clamp(48px, 12vw, 70px);
-      }
-    }
+.woord.uit {
+  opacity: 0;
+  transform: translateY(20px);
+}
 
-    @media (prefers-reduced-motion: reduce) {
-      .woord {
-        transition: none;
-      }
-    }
-  </style>
+/* Klein volgnummer */
+
+.volgnummer {
+  color: var(--rood);
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 14px;
+  letter-spacing: 2px;
+}
+
+/* Pijlen links en rechts */
+
+.pijl {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--geel);
+  font-size: 36px;
+  font-weight: 900;
+  pointer-events: none;
+}
+
+.pijl-links {
+  left: 4%;
+}
+
+.pijl-rechts {
+  right: 4%;
+}
+
+/* Origineel SVG-logo */
+
+.logo-desktop {
+  position: absolute;
+  z-index: 6;
+  right: 2.5%;
+  bottom: 5%;
+  width: clamp(250px, 33vw, 530px);
+  height: auto;
+  pointer-events: none;
+}
+
+/* =========================
+   MOBIEL
+   Een andere leeservaring:
+   verticaal frituurticket
+========================= */
+
+.mobiel {
+  display: none;
+}
+
+@media (max-width: 700px) {
+
+  .desktop {
+    display: none;
+  }
+
+  .mobiel {
+    display: block;
+    position: relative;
+    background: var(--rood);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Bovenkant */
+
+  .mobiel-header {
+    position: relative;
+    padding: 85px 7% 55px;
+    color: var(--geel);
+  }
+
+  .mobiel-header h1 {
+    font-size: clamp(35px, 11vw, 58px);
+    font-weight: 900;
+    line-height: .95;
+    margin: 0 0 12px;
+  }
+
+  .mobiel-header a {
+    font-size: 18px;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .terug-mobiel {
+    position: absolute;
+    top: 25px;
+    left: 7%;
+    color: var(--geel);
+    font-size: 15px;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .mobiel-instructie {
+    margin-top: 35px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Het lange gele ticket */
+
+  .ticket {
+    position: relative;
+    width: 84%;
+    margin: 0 auto;
+    background: var(--geel);
+    color: var(--rood);
+    padding: 45px 7% 65px;
+    box-shadow: 12px 12px 0 rgba(0,0,0,.08);
+  }
+
+  .ticket::before {
+    content: "";
+    position: absolute;
+    top: -14px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: var(--geel);
+    clip-path: polygon(
+      0 100%, 5% 0, 10% 100%,
+      15% 0, 20% 100%, 25% 0,
+      30% 100%, 35% 0, 40% 100%,
+      45% 0, 50% 100%, 55% 0,
+      60% 100%, 65% 0, 70% 100%,
+      75% 0, 80% 100%, 85% 0,
+      90% 100%, 95% 0, 100% 100%
+    );
+  }
+
+  .ticket::after {
+    content: "";
+    position: absolute;
+    bottom: -14px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: var(--geel);
+    clip-path: polygon(
+      0 0, 5% 100%, 10% 0,
+      15% 100%, 20% 0, 25% 100%,
+      30% 0, 35% 100%, 40% 0,
+      45% 100%, 50% 0, 55% 100%,
+      60% 0, 65% 100%, 70% 0,
+      75% 100%, 80% 0, 85% 100%,
+      90% 0, 95% 100%, 100% 0
+    );
+  }
+
+  .ticket-titel {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    padding-bottom: 25px;
+    border-bottom: 3px dashed var(--rood);
+  }
+
+  /* Elk item verschijnt bij scrollen */
+
+  .ticket-item {
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 3px dashed var(--rood);
+    opacity: 0;
+    transform: translateY(65px);
+    transition:
+      opacity .65s ease,
+      transform .65s ease;
+  }
+
+  .ticket-item.zichtbaar {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ticket-nummer {
+    font-size: 15px;
+    font-weight: 900;
+    margin-bottom: 20px;
+  }
+
+  .ticket-woord {
+    font-size: clamp(29px, 8vw, 52px);
+    font-weight: 900;
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+
+  .ticket-onderaan {
+    text-align: center;
+    padding-top: 45px;
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  .mobiel-footer {
+    padding: 95px 7% 45px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .logo-mobiel {
+    width: min(80%, 350px);
+    height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+</style>
 </head>
 
 <body>
-  <main class="pagina">
 
-    <!-- Gele diagonale strook -->
-    <div class="strook" aria-hidden="true"></div>
+<!-- =========================
+     DESKTOP
+========================= -->
 
-    <!-- Titel en klikbare locatie -->
-    <header class="kop">
-      <h1>BESTELLING #3</h1>
+<main class="desktop">
 
-      <a
-        href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c37169a8332305:0x2ffe68840c89c2a9?sa=X&ved=1t:8290&ictx=111"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="De Frietketel openen in Google Maps"
-      >
-        DE FRIETKETEL, GENT
-      </a>
-    </header>
+  <div class="diagonaal"></div>
 
-    <!-- Terug naar de vorige pagina -->
-    <a class="terug" href="javascript:history.back()">
+  <header class="titel">
+    <h1>BESTELLING #3</h1>
+
+    <a
+      href="https://www.google.com/maps/search/?api=1&query=Papegaaistraat+89%2C+9000+Gent"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      DE FRIETKETEL, GENT
+    </a>
+  </header>
+
+  <a class="terug" href="index.html">
+    ← TERUG
+  </a>
+
+  <button
+    class="klikzone links"
+    id="vorige"
+    aria-label="Vorig onderdeel"
+  ></button>
+
+  <button
+    class="klikzone rechts"
+    id="volgende"
+    aria-label="Volgend onderdeel"
+  ></button>
+
+  <span class="pijl pijl-links">←</span>
+  <span class="pijl pijl-rechts">→</span>
+
+  <div class="woord-container">
+    <h2 class="woord" id="woord">
+      TOMATENKETCHUP
+    </h2>
+
+    <div class="volgnummer" id="volgnummer">
+      01 / 04
+    </div>
+  </div>
+
+  <img
+    class="logo-desktop"
+    src="logo.svg"
+    alt="Friesfriday"
+  >
+
+</main>
+
+
+<!-- =========================
+     MOBIEL
+========================= -->
+
+<main class="mobiel">
+
+  <header class="mobiel-header">
+
+    <a class="terug-mobiel" href="index.html">
       ← TERUG
     </a>
 
-    <!-- Klik links voor het vorige woord -->
-    <button
-      class="klikzone links"
-      id="vorige"
-      type="button"
-      aria-label="Vorig woord"
-    ></button>
+    <h1>BESTELLING<br>#3</h1>
 
-    <!-- Klik rechts voor het volgende woord -->
-    <button
-      class="klikzone rechts"
-      id="volgende"
-      type="button"
-      aria-label="Volgend woord"
-    ></button>
+    <a
+      href="https://www.google.com/maps/search/?api=1&query=Papegaaistraat+89%2C+9000+Gent"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      DE FRIETKETEL, GENT ↗
+    </a>
 
-    <!-- De woorden verschijnen afzonderlijk -->
-    <p class="woord" id="woord" aria-live="polite">
-      TOMATENKETCHUP
+    <p class="mobiel-instructie">
+      ↓ SCROLL DOOR JE BESTELLING
     </p>
 
-    <!-- Logo rechtsonder -->
-    <div class="logo" aria-label="FRIESFRIDAY">
-      <span>FR</span>
-      <i></i>
-      <span>ESFR</span>
-      <i></i>
-      <span>DAY</span>
+  </header>
+
+  <section class="ticket">
+
+    <div class="ticket-titel">
+      FRIESFRIDAY<br>
+      BESTELBON #003
     </div>
 
-  </main>
+    <div class="ticket-item">
+      <span class="ticket-nummer">01 —</span>
+      <span class="ticket-woord">PUNTZAK</span>
+    </div>
 
-  <script>
-    const woorden = [
-      "TOMATENKETCHUP",
-      "VIANDEL",
-      "CHICKENNUGGETS",
-      "PUNTZAK"
-    ];
+    <div class="ticket-item">
+      <span class="ticket-nummer">02 —</span>
+      <span class="ticket-woord">CHICKEN<br>NUGGETS</span>
+    </div>
 
-    let huidigWoord = 0;
+    <div class="ticket-item">
+      <span class="ticket-nummer">03 —</span>
+      <span class="ticket-woord">VIANDEL</span>
+    </div>
 
-    const woordElement = document.getElementById("woord");
-    const vorigeKnop = document.getElementById("vorige");
-    const volgendeKnop = document.getElementById("volgende");
+    <div class="ticket-item">
+      <span class="ticket-nummer">04 —</span>
+      <span class="ticket-woord">TOMATEN<br>KETCHUP</span>
+    </div>
 
-    function toonWoord(index) {
-      huidigWoord = (index + woorden.length) % woorden.length;
+    <div class="ticket-onderaan">
+      EINDE BESTELLING<br>
+      ★ SMAKELIJK ★
+    </div>
 
-      woordElement.classList.add("verdwijn");
+  </section>
 
-      window.setTimeout(() => {
-        woordElement.textContent = woorden[huidigWoord];
-        woordElement.classList.remove("verdwijn");
-      }, 180);
-    }
+  <footer class="mobiel-footer">
+    <img
+      class="logo-mobiel"
+      src="logo.svg"
+      alt="Friesfriday"
+    >
+  </footer>
 
-    vorigeKnop.addEventListener("click", () => {
-      toonWoord(huidigWoord - 1);
-    });
+</main>
 
-    volgendeKnop.addEventListener("click", () => {
-      toonWoord(huidigWoord + 1);
-    });
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowLeft") {
-        toonWoord(huidigWoord - 1);
+<script>
+
+/* =========================
+   DESKTOP INTERACTIE
+========================= */
+
+const woorden = [
+  "TOMATENKETCHUP",
+  "VIANDEL",
+  "CHICKENNUGGETS",
+  "PUNTZAK"
+];
+
+let huidig = 0;
+let bezig = false;
+
+const woord = document.getElementById("woord");
+const volgnummer = document.getElementById("volgnummer");
+
+function veranderWoord(richting) {
+
+  if (bezig) return;
+  bezig = true;
+
+  woord.classList.add("uit");
+
+  setTimeout(() => {
+
+    huidig = (huidig + richting + woorden.length) % woorden.length;
+
+    woord.textContent = woorden[huidig];
+
+    volgnummer.textContent =
+      String(huidig + 1).padStart(2, "0") +
+      " / 04";
+
+    woord.classList.remove("uit");
+
+    setTimeout(() => {
+      bezig = false;
+    }, 250);
+
+  }, 250);
+}
+
+document.getElementById("vorige").addEventListener("click", () => {
+  veranderWoord(-1);
+});
+
+document.getElementById("volgende").addEventListener("click", () => {
+  veranderWoord(1);
+});
+
+document.addEventListener("keydown", (event) => {
+
+  if (window.innerWidth <= 700) return;
+
+  if (event.key === "ArrowLeft") {
+    veranderWoord(-1);
+  }
+
+  if (event.key === "ArrowRight") {
+    veranderWoord(1);
+  }
+
+});
+
+
+/* =========================
+   MOBIELE SCROLLANIMATIE
+========================= */
+
+const items = document.querySelectorAll(".ticket-item");
+
+if ("IntersectionObserver" in window) {
+
+  const observer = new IntersectionObserver((entries) => {
+
+    entries.forEach(entry => {
+
+      if (entry.isIntersecting) {
+        entry.target.classList.add("zichtbaar");
+        observer.unobserve(entry.target);
       }
 
-      if (event.key === "ArrowRight") {
-        toonWoord(huidigWoord + 1);
-      }
     });
-  </script>
+
+  }, {
+    threshold: 0.25
+  });
+
+  items.forEach(item => observer.observe(item));
+
+} else {
+
+  items.forEach(item => {
+    item.classList.add("zichtbaar");
+  });
+
+}
+
+</script>
+
 </body>
 </html>
