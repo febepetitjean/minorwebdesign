@@ -1,1 +1,522 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fries Friday – Snack Ranking</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --pink: #EF2850;
+  --yellow: #FFBE36;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--pink);
+  color: var(--yellow);
+  font-family: 'Jost', sans-serif;
+  font-weight: 800;
+}
+
+button { font: inherit; cursor: pointer; }
+
+#ranking {
+  min-height: 100vh;
+  padding: 8vh 0 7vh;
+}
+
+.tier {
+  display: grid;
+  grid-template-columns: clamp(165px, 17vw, 275px) 1fr;
+  gap: clamp(25px, 6vw, 110px);
+  align-items: center;
+  min-height: 99px;
+}
+
+.tier-label {
+  width: 100%;
+  min-height: 64px;
+  border: 0;
+  background: var(--yellow);
+  color: var(--pink);
+  font-size: clamp(19px, 2vw, 32px);
+  font-weight: 900;
+  text-align: center;
+  transition: transform .2s, filter .2s;
+}
+
+.tier-label:hover {
+  transform: translateX(8px);
+  filter: brightness(1.08);
+}
+
+.tier-items {
+  min-height: 76px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 12px 5vw 12px 0;
+  border-radius: 8px;
+}
+
+.tier-items.over {
+  background: rgba(255,190,54,.15);
+  outline: 2px dashed var(--yellow);
+  outline-offset: -4px;
+}
+
+.snack {
+  display: inline-block;
+  background: transparent;
+  color: var(--yellow);
+  border: 0;
+  padding: 2px 0;
+  font-size: clamp(18px, 1.85vw, 29px);
+  font-weight: 900;
+  line-height: 1.15;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.snack:active { cursor: grabbing; }
+
+.snack.dragging {
+  opacity: .25;
+}
+
+#pool {
+  max-width: 1100px;
+  margin: 35px 5vw 0 clamp(200px, 30.5vw, 510px);
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  gap: 0 10px;
+  min-height: 100px;
+}
+
+#pool .snack:not(:last-child)::after {
+  content: ",";
+}
+
+#pool.over {
+  outline: 2px dashed var(--yellow);
+  border-radius: 8px;
+}
+
+.hint {
+  margin: 35px 5vw 0 clamp(200px, 30.5vw, 510px);
+  font-size: 13px;
+  opacity: .75;
+}
+
+.reset {
+  margin: 20px 5vw 0 clamp(200px, 30.5vw, 510px);
+  background: none;
+  border: 2px solid var(--yellow);
+  color: var(--yellow);
+  padding: 9px 18px;
+  font-size: 14px;
+}
+
+/* PLATEAU SCHERM */
+
+#plateau-page {
+  display: none;
+  min-height: 100vh;
+  padding: 32px;
+  text-align: center;
+}
+
+#plateau-page.active { display: block; }
+#ranking.hidden { display: none; }
+
+.back {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: var(--yellow);
+  color: var(--pink);
+  border: 0;
+  padding: 10px 25px;
+  font-size: 18px;
+}
+
+.plateau-title {
+  margin: 65px 0 15px;
+  color: var(--yellow);
+  font-size: clamp(45px, 8vw, 115px);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.plateau-subtitle {
+  font-size: 17px;
+  margin-bottom: 30px;
+}
+
+.plateau {
+  width: min(85vw, 920px);
+  min-height: 380px;
+  margin: 20px auto;
+  padding: 45px;
+  border: 18px solid #E7E0D1;
+  border-radius: 35px;
+  background: #F5EEDF;
+  box-shadow:
+    inset 0 0 0 5px #D8D0C1,
+    12px 17px 0 rgba(0,0,0,.15);
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 18px;
+  transform: rotate(-1deg);
+}
+
+.plateau-snack {
+  background: var(--yellow);
+  color: var(--pink);
+  border-radius: 12px;
+  padding: 16px 22px;
+  font-size: clamp(16px, 2vw, 26px);
+  box-shadow: 4px 5px 0 rgba(0,0,0,.12);
+  transform: rotate(var(--rotation));
+}
+
+.empty {
+  color: var(--pink);
+  font-size: 24px;
+}
+
+.floating {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  background: var(--yellow);
+  color: var(--pink);
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 23px;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 700px) {
+  #ranking { padding-top: 35px; }
+  .tier {
+    grid-template-columns: 130px 1fr;
+    gap: 14px;
+    min-height: 90px;
+  }
+  .tier-label {
+    min-height: 55px;
+    font-size: 17px;
+  }
+  .tier-items { padding-right: 10px; }
+  .snack { font-size: 17px; }
+  #pool, .hint {
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+  .reset { margin-left: 25px; }
+  .plateau {
+    width: 100%;
+    padding: 22px;
+    border-width: 10px;
+    min-height: 300px;
+  }
+  #plateau-page { padding: 18px; }
+}
+</style>
+</head>
+
+<body>
+
+<main id="ranking">
+  <div id="tiers"></div>
+  <div id="pool"></div>
+
+  <p class="hint">
+    Sleep elke snack naar jouw favoriete categorie.
+    Klik op een gele categorie om het plateau te bekijken.
+  </p>
+  <button class="reset" id="reset">RESET RANKING</button>
+</main>
+
+<section id="plateau-page">
+  <button class="back" id="back">← TERUG</button>
+  <h1 class="plateau-title" id="plateau-title"></h1>
+  <p class="plateau-subtitle">JOUW FRITUURPLATEAU</p>
+  <div class="plateau" id="plateau"></div>
+</section>
+
+<script>
+const categories = [
+  "GODLIKE",
+  "VERY GOOD",
+  "GOOD",
+  "AVERAGE",
+  "MEH",
+  "BAD",
+  "TRASH"
+];
+
+const snacks = [
+  "curryworst",
+  "curryworst speciaal",
+  "frikandel",
+  "viandel",
+  "mexicano",
+  "boulet",
+  "boulet speciaal",
+  "berepoot",
+  "cervela",
+  "kipcorn",
+  "kipnuggets",
+  "chicken fingers",
+  "bitterballen",
+  "kaaskroket",
+  "garnaalkroket",
+  "vleeskroket",
+  "kaassoufflé",
+  "mozzarellasticks",
+  "loempia",
+  "mini-loempia's",
+  "Bicky Burger",
+  "hamburger",
+  "fishstick",
+  "saté",
+  "lucifers"
+];
+
+const storageKey = "friesfriday-ranking-v1";
+
+let ranking = {};
+try {
+  ranking = JSON.parse(localStorage.getItem(storageKey)) || {};
+} catch {
+  ranking = {};
+}
+
+const tiers = document.getElementById("tiers");
+const pool = document.getElementById("pool");
+
+function save() {
+  localStorage.setItem(storageKey, JSON.stringify(ranking));
+}
+
+function moveSnack(name, category) {
+  if (category === "pool") {
+    delete ranking[name];
+  } else {
+    ranking[name] = category;
+  }
+  save();
+  render();
+}
+
+function createSnack(name) {
+  const el = document.createElement("span");
+  el.className = "snack";
+  el.textContent = name;
+  el.dataset.snack = name;
+
+  el.addEventListener("pointerdown", startDrag);
+  return el;
+}
+
+function render() {
+  tiers.innerHTML = "";
+  pool.innerHTML = "";
+
+  categories.forEach(category => {
+    const row = document.createElement("div");
+    row.className = "tier";
+
+    const label = document.createElement("button");
+    label.className = "tier-label";
+    label.textContent = category;
+    label.onclick = () => openPlateau(category);
+
+    const area = document.createElement("div");
+    area.className = "tier-items";
+    area.dataset.category = category;
+
+    snacks
+      .filter(name => ranking[name] === category)
+      .forEach(name => area.appendChild(createSnack(name)));
+
+    row.append(label, area);
+    tiers.appendChild(row);
+  });
+
+  pool.dataset.category = "pool";
+
+  snacks
+    .filter(name => !categories.includes(ranking[name]))
+    .forEach(name => pool.appendChild(createSnack(name)));
+}
+
+/* SLEPEN MET MUIS OF VINGER */
+
+let drag = null;
+
+function startDrag(e) {
+  if (e.button !== 0) return;
+
+  const name = e.currentTarget.dataset.snack;
+  const original = e.currentTarget;
+  const startX = e.clientX;
+  const startY = e.clientY;
+
+  drag = {
+    name,
+    original,
+    startX,
+    startY,
+    moved: false,
+    ghost: null
+  };
+
+  original.setPointerCapture(e.pointerId);
+  original.addEventListener("pointermove", onDrag);
+  original.addEventListener("pointerup", endDrag);
+  original.addEventListener("pointercancel", cancelDrag);
+}
+
+function onDrag(e) {
+  if (!drag) return;
+
+  const distance = Math.hypot(
+    e.clientX - drag.startX,
+    e.clientY - drag.startY
+  );
+
+  if (!drag.moved && distance < 6) return;
+
+  if (!drag.moved) {
+    drag.moved = true;
+    drag.ghost = document.createElement("div");
+    drag.ghost.className = "floating";
+    drag.ghost.textContent = drag.name;
+    document.body.appendChild(drag.ghost);
+    drag.original.classList.add("dragging");
+  }
+
+  drag.ghost.style.left = e.clientX + "px";
+  drag.ghost.style.top = e.clientY + "px";
+
+  document.querySelectorAll(".over").forEach(el => {
+    el.classList.remove("over");
+  });
+
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+  const zone = target?.closest(".tier-items, #pool");
+
+  if (zone) zone.classList.add("over");
+}
+
+function cleanupDrag() {
+  if (!drag) return;
+
+  drag.original.classList.remove("dragging");
+  drag.ghost?.remove();
+
+  drag.original.removeEventListener("pointermove", onDrag);
+  drag.original.removeEventListener("pointerup", endDrag);
+  drag.original.removeEventListener("pointercancel", cancelDrag);
+
+  document.querySelectorAll(".over").forEach(el => {
+    el.classList.remove("over");
+  });
+
+  drag = null;
+}
+
+function endDrag(e) {
+  if (!drag) return;
+
+  const name = drag.name;
+  const moved = drag.moved;
+
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+  let zone = target?.closest(".tier-items, #pool");
+
+  // Ook droppen op het gele categorielabel is mogelijk
+  if (!zone) {
+    const row = target?.closest(".tier");
+    if (row) zone = row.querySelector(".tier-items");
+  }
+
+  const category = zone?.dataset.category;
+
+  cleanupDrag();
+
+  if (moved && category) {
+    moveSnack(name, category);
+  }
+}
+
+function cancelDrag() {
+  cleanupDrag();
+}
+
+/* PLATEAU TONEN */
+
+function openPlateau(category) {
+  document.getElementById("ranking").classList.add("hidden");
+  document.getElementById("plateau-page").classList.add("active");
+
+  document.getElementById("plateau-title").textContent = category;
+
+  const plateau = document.getElementById("plateau");
+  plateau.innerHTML = "";
+
+  const selected = snacks.filter(name => ranking[name] === category);
+
+  if (!selected.length) {
+    const message = document.createElement("p");
+    message.className = "empty";
+    message.textContent = "Nog geen snacks op dit plateau!";
+    plateau.appendChild(message);
+  } else {
+    selected.forEach((name, index) => {
+      const item = document.createElement("div");
+      item.className = "plateau-snack";
+      item.textContent = name;
+
+      const angle = ((index * 7) % 13) - 6;
+      item.style.setProperty("--rotation", angle + "deg");
+
+      plateau.appendChild(item);
+    });
+  }
+
+  window.scrollTo(0, 0);
+}
+
+document.getElementById("back").onclick = () => {
+  document.getElementById("plateau-page").classList.remove("active");
+  document.getElementById("ranking").classList.remove("hidden");
+};
+
+document.getElementById("reset").onclick = () => {
+  if (confirm("Wil je jouw volledige ranking opnieuw beginnen?")) {
+    ranking = {};
+    save();
+    render();
+  }
+};
+
+render();
+</script>
+</body>
+</html>
