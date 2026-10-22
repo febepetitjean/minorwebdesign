@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,21 +13,41 @@
   #pile{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
   #pile .slot{position:absolute}
   #pile .b{position:absolute;background:var(--yellow)}
-  /* Logo: an SVG on the original 2576x1449 artboard, so every part sits exactly where it does in the design. */
   #logo{position:absolute;inset:0;width:100%;height:100%;z-index:2;overflow:visible}
   #logo text{
     font-family:"Jost","Futura","Century Gothic","Avenir Next",sans-serif;
     font-style:italic;font-weight:800;font-size:233px;fill:var(--yellow);
   }
   #logo .lb{fill:var(--yellow)}
-  .replay{
-    position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;
+
+  /* Knoppen rechtsboven: Replay, daaronder Menu */
+  .controls{
+    position:absolute;z-index:4;
+    top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;
+    display:flex;flex-direction:column;align-items:flex-end;gap:10px;
+  }
+  .controls button, .menu a{
     font:700 14px/1 "Jost","Futura","Century Gothic",sans-serif;
+  }
+  .btn{
     color:var(--yellow);background:transparent;border:2px solid var(--yellow);
     border-radius:999px;padding:10px 18px;cursor:pointer;
   }
-  .replay:hover{background:var(--yellow);color:var(--red)}
-  .replay:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  .btn:hover,.btn[aria-expanded="true"]{background:var(--yellow);color:var(--red)}
+  .btn:focus-visible,.menu a:focus-visible{outline:3px solid #fff;outline-offset:3px}
+
+  /* Uitklapmenu onder de menuknop */
+  .menu{
+    list-style:none;margin:0;padding:8px;
+    display:none;flex-direction:column;gap:2px;min-width:180px;
+    background:var(--red);border:2px solid var(--yellow);border-radius:18px;
+  }
+  .menu.open{display:flex}
+  .menu a{
+    display:block;padding:12px 14px;border-radius:10px;
+    color:var(--yellow);text-decoration:none;font-size:16px;
+  }
+  .menu a:hover{background:var(--yellow);color:var(--red)}
 </style>
 </head>
 <body>
@@ -39,7 +59,18 @@
     <polygon class="lb" points="886,328 938,330 847,774 795,774"/>
     <polygon class="lb" points="1581,328 1633,330 1542,774 1490,774"/>
   </svg>
-  <button class="replay" type="button">Replay</button>
+
+  <div class="controls">
+    <button class="btn replay" type="button">Replay</button>
+    <button class="btn menu-btn" type="button" aria-expanded="false" aria-controls="site-menu">Menu</button>
+    <!-- Pas hier de links aan naar de pagina's van je website -->
+    <ul class="menu" id="site-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="over-ons.html">Over ons</a></li>
+      <li><a href="menu.html">Menukaart</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
 
 <script>
 (function(){
@@ -131,6 +162,24 @@
   document.querySelector(".replay").addEventListener("click", play);
   var t; window.addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(play, 250); });
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(play);
+
+  // Menu: open/sluit met de knop, sluit bij klik buiten het menu of op Escape
+  var menuBtn = document.querySelector(".menu-btn");
+  var menu = document.getElementById("site-menu");
+  function setMenu(open){
+    menu.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  menuBtn.addEventListener("click", function(e){
+    e.stopPropagation();
+    setMenu(!menu.classList.contains("open"));
+  });
+  document.addEventListener("click", function(e){
+    if(!menu.contains(e.target)) setMenu(false);
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape"){ setMenu(false); menuBtn.focus(); }
+  });
 })();
 </script>
 </body>
