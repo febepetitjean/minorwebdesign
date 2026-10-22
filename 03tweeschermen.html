@@ -1,285 +1,280 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FRIESFRIDAY — Bestelling #3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bestelling #3 — Frietketel Gent</title>
 
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  body {
-    background: #f2294b;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-
-  .page {
-    position: relative;
-    width: 100vw;
-    height: 100dvh;
-    overflow: hidden;
-
-    /* Gebruik je originele ontwerp als achtergrond */
-    background-image: url("WEBDESIGN-09%281%29.png");
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  /* Gele strook: loopt schuin van boven tot onder */
-  .yellow-stripe {
-    position: absolute;
-    inset: 0;
-    background: #ffbd32;
-    clip-path: polygon(
-      62.3% 0,
-      98.4% 0,
-      39.3% 100%,
-      2.4% 100%
-    );
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  /* Terugknop */
-  .back-button {
-    position: absolute;
-    top: 28px;
-    left: 30px;
-    z-index: 5;
-
-    border: none;
-    background: #ffbd32;
-    color: #f2294b;
-
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: 800;
-    text-transform: uppercase;
-
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .back-button:hover {
-    background: #f2294b;
-    color: #ffbd32;
-    outline: 2px solid #ffbd32;
-  }
-
-  /* Het actieve woord */
-  .word-container {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-
-    z-index: 3;
-    width: 90%;
-    text-align: center;
-
-    pointer-events: none;
-  }
-
-  .word {
-    color: #f2294b;
-    font-size: clamp(20px, 2.1vw, 32px);
-    font-weight: 900;
-    text-transform: uppercase;
-    white-space: nowrap;
-
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.25s ease, transform 0.25s ease;
-  }
-
-  .word.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Klikzones links en rechts van de strook */
-  .click-zone {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    z-index: 2;
-    width: 50%;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-  }
-
-  .click-left {
-    left: 0;
-    clip-path: polygon(
-      0 0,
-      62.3% 0,
-      2.4% 100%,
-      0 100%
-    );
-  }
-
-  .click-right {
-    right: 0;
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% 100%,
-      39.3% 100%
-    );
-  }
-
-  .click-zone:focus-visible {
-    outline: 3px solid #ffbd32;
-    outline-offset: -6px;
-  }
-
-  /* Kleine aanwijzing onderaan */
-  .hint {
-    position: absolute;
-    left: 50%;
-    bottom: 24px;
-    transform: translateX(-50%);
-    z-index: 4;
-
-    color: #ffbd32;
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    white-space: nowrap;
-
-    pointer-events: none;
-  }
-
-  @media (max-width: 600px) {
-    .back-button {
-      top: 16px;
-      left: 16px;
-      padding: 10px 14px;
-      font-size: 13px;
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-    .word {
-      font-size: clamp(16px, 4vw, 24px);
+    :root {
+      --rood: #ee2f4e;
+      --geel: #ffbd34;
     }
 
-    .hint {
-      font-size: 9px;
-      bottom: 14px;
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
     }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    .word {
-      transition: none;
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--rood);
+      color: var(--geel);
     }
-  }
-</style>
+
+    .pagina {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      isolation: isolate;
+      background-image: url("bestelling3.png");
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* De oorspronkelijke gele strook wordt opnieuw getekend
+       zodat de woorden uit de afbeelding niet zichtbaar blijven. */
+    .strook {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: var(--geel);
+      clip-path: polygon(
+        62.1% 0,
+        98.1% 0,
+        39.1% 100%,
+        2.2% 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Klikzones naast de gele strook */
+    .klikzone {
+      position: absolute;
+      inset-block: 0;
+      width: 50%;
+      z-index: 2;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .klikzone.links {
+      left: 0;
+    }
+
+    .klikzone.rechts {
+      right: 0;
+    }
+
+    /* De woorden verschijnen één voor één op de strook */
+    .woord {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      top: 50%;
+      width: 90%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+      color: var(--rood);
+      font-size: clamp(17px, 2vw, 30px);
+      line-height: 1.1;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 250ms ease;
+    }
+
+    .woord.zichtbaar {
+      opacity: 1;
+    }
+
+    /* Navigatie bovenaan */
+    .terug {
+      position: absolute;
+      top: 24px;
+      left: 28px;
+      z-index: 10;
+      color: var(--geel);
+      font-size: 16px;
+      font-weight: 800;
+      text-decoration: none;
+      text-transform: uppercase;
+      padding: 8px 0;
+    }
+
+    .terug:hover {
+      text-decoration: underline;
+    }
+
+    /* Klikbare link over de bestaande titel in de achtergrond */
+    .maps-link {
+      position: absolute;
+      top: 13.5%;
+      left: 3.5%;
+      width: 25%;
+      height: 5.5%;
+      z-index: 8;
+      display: block;
+    }
+
+    .maps-link:focus-visible,
+    .terug:focus-visible,
+    .klikzone:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 4px;
+    }
+
+    .hulp {
+      position: absolute;
+      z-index: 4;
+      bottom: 3%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--rood);
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 250ms ease;
+      pointer-events: none;
+    }
+
+    .pagina:hover .hulp {
+      opacity: 0.75;
+    }
+
+    @media (max-width: 600px) {
+      .terug {
+        top: 12px;
+        left: 16px;
+        font-size: 13px;
+      }
+
+      .woord {
+        font-size: clamp(15px, 4vw, 23px);
+      }
+
+      .maps-link {
+        top: 13%;
+        left: 4%;
+        width: 40%;
+        height: 6%;
+      }
+
+      .hulp {
+        font-size: 10px;
+        bottom: 2%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .woord, .hulp {
+        transition: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <main class="pagina" id="pagina" aria-label="Bestelling 3">
 
-<div class="page">
+    <div class="strook" aria-hidden="true"></div>
 
-  <!-- Gele diagonale strook -->
-  <div class="yellow-stripe"></div>
+    <a
+      class="terug"
+      href="javascript:history.back()"
+      aria-label="Terug naar de vorige pagina"
+    >← Terug</a>
 
-  <!-- Terug naar de vorige pagina -->
-  <button class="back-button" onclick="goBack()">
-    ← Terug
-  </button>
+    <a
+      class="maps-link"
+      href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c37169a8332305:0x2ffe68840c89c2a9?sa=X&ved=1t:8290&ictx=111"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Open Frietketel Gent in Google Maps"
+      title="Open in Google Maps"
+    ></a>
 
-  <!-- Klik links om terug te gaan -->
-  <button
-    class="click-zone click-left"
-    aria-label="Vorig woord"
-    onclick="changeWord(-1)">
-  </button>
+    <button
+      class="klikzone links"
+      id="vorige"
+      type="button"
+      aria-label="Toon het vorige woord"
+    ></button>
 
-  <!-- Klik rechts om verder te gaan -->
-  <button
-    class="click-zone click-right"
-    aria-label="Volgend woord"
-    onclick="changeWord(1)">
-  </button>
+    <button
+      class="klikzone rechts"
+      id="volgende"
+      type="button"
+      aria-label="Toon het volgende woord"
+    ></button>
 
-  <!-- Hier verschijnt telkens één woord -->
-  <div class="word-container" aria-live="polite">
-    <div class="word visible" id="activeWord">
+    <p class="woord zichtbaar" id="woord" aria-live="polite">
       TOMATENKETCHUP
-    </div>
-  </div>
+    </p>
 
-  <div class="hint">
-    Klik links of rechts om verder te gaan
-  </div>
+    <p class="hulp" aria-hidden="true">
+      Klik links of rechts om te ontdekken
+    </p>
 
-</div>
+  </main>
 
-<script>
-  const words = [
-    "TOMATENKETCHUP",
-    "VIANDEL",
-    "CHICKENNUGGETS",
-    "PUNTZAK"
-  ];
+  <script>
+    const woorden = [
+      "PUNTZAK",
+      "CHICKENNUGGETS",
+      "VIANDEL",
+      "TOMATENKETCHUP"
+    ];
 
-  let currentIndex = 0;
+    let huidigWoord = 3;
 
-  const activeWord = document.getElementById("activeWord");
+    const woordElement = document.getElementById("woord");
+    const vorigeKnop = document.getElementById("vorige");
+    const volgendeKnop = document.getElementById("volgende");
 
-  function changeWord(direction) {
-    const nextIndex = currentIndex + direction;
+    function toonWoord(index) {
+      huidigWoord = (index + woorden.length) % woorden.length;
 
-    // Stop aan het begin en einde van de lijst
-    if (nextIndex < 0 || nextIndex >= words.length) {
-      return;
+      woordElement.classList.remove("zichtbaar");
+
+      window.setTimeout(() => {
+        woordElement.textContent = woorden[huidigWoord];
+        woordElement.classList.add("zichtbaar");
+      }, 150);
     }
 
-    currentIndex = nextIndex;
+    vorigeKnop.addEventListener("click", () => {
+      toonWoord(huidigWoord - 1);
+    });
 
-    // Verberg het huidige woord
-    activeWord.classList.remove("visible");
+    volgendeKnop.addEventListener("click", () => {
+      toonWoord(huidigWoord + 1);
+    });
 
-    // Toon daarna het nieuwe woord
-    setTimeout(() => {
-      activeWord.textContent = words[currentIndex];
-      activeWord.classList.add("visible");
-    }, 150);
-  }
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        toonWoord(huidigWoord - 1);
+      }
 
-  function goBack() {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      // Pas dit aan als je een vaste vorige pagina hebt
-      window.location.href = "index.html";
-    }
-  }
-
-  // Ondersteuning voor de pijltjestoetsen
-  document.addEventListener("keydown", function(event) {
-    if (event.key === "ArrowRight") {
-      changeWord(1);
-    }
-
-    if (event.key === "ArrowLeft") {
-      changeWord(-1);
-    }
-  });
-</script>
-
+      if (event.key === "ArrowRight") {
+        toonWoord(huidigWoord + 1);
+      }
+    });
+  </script>
 </body>
 </html>
