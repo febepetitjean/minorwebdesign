@@ -5,8 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>FRIES FRIDAY — SNACK RANKING</title>
+<title>FRIES FRIDAY — TIERLIST</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
@@ -19,12 +21,13 @@
   box-sizing: border-box;
 }
 
-html, body {
-  margin: 0;
-  min-height: 100%;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
+  min-height: 100vh;
   background: var(--pink);
   color: var(--yellow);
   font-family: 'Jost', sans-serif;
@@ -37,42 +40,77 @@ button {
 }
 
 /* =========================
+   TERUGKNOP
+========================= */
+
+.back-home {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  z-index: 20;
+
+  background: var(--yellow);
+  color: var(--pink);
+  border: none;
+
+  padding: 10px 24px;
+  font-size: 17px;
+  font-weight: 900;
+
+  text-decoration: none;
+  transition: transform .2s;
+}
+
+.back-home:hover {
+  transform: translateX(-5px);
+}
+
+/* =========================
    HOOFDSCHERM
 ========================= */
 
 #ranking {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: 18% 1fr;
-  column-gap: 12%;
-  align-items: center;
-  padding: 5vh 4vw 5vh 0;
+  padding: 105px 4vw 55px 0;
 }
 
-/* CATEGORIEËN */
+/* ALLE CATEGORIEËN */
 
 #tiers {
   display: flex;
   flex-direction: column;
-  gap: clamp(13px, 2.4vh, 28px);
+  gap: 14px;
 }
+
+/* ELKE RIJ */
 
 .tier {
-  display: contents;
+  display: grid;
+  grid-template-columns:
+    clamp(150px, 19vw, 290px)
+    minmax(0, 1fr);
+
+  column-gap: clamp(20px, 5vw, 90px);
+  align-items: center;
+
+  min-height: 95px;
 }
 
+/* GELE CATEGORIEKNOP */
+
 .tier-label {
+  width: 100%;
+  min-height: 65px;
+
   background: var(--yellow);
   color: var(--pink);
+
   border: none;
 
-  width: 100%;
-  height: clamp(55px, 7vh, 70px);
-
-  font-size: clamp(18px, 2vw, 32px);
+  font-size: clamp(19px, 2.1vw, 33px);
   font-weight: 900;
-
   text-align: center;
+
   transition: transform .2s ease;
 }
 
@@ -80,43 +118,49 @@ button {
   transform: translateX(8px);
 }
 
-/* RECHTERKANT */
+/* FOTO'S IN DE CATEGORIE */
 
-#right-side {
-  grid-column: 2;
-  grid-row: 1;
+.tier-items {
+  min-height: 95px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 20px;
-}
 
-/* LOSSE SNACKS */
-
-#pool {
   display: flex;
   flex-wrap: wrap;
-  align-content: center;
   align-items: center;
-  gap: 0 9px;
+  align-content: center;
 
-  min-height: 180px;
-  padding: 20px 0;
+  gap: 8px 15px;
+  padding: 8px 12px;
+
+  border-radius: 8px;
 }
 
-/* SNACKWOORDEN */
+/* =========================
+   FOTO'S VAN SNACKS
+========================= */
 
 .snack {
-  display: inline-block;
-  color: var(--yellow);
-  font-size: clamp(18px, 1.9vw, 31px);
-  font-weight: 900;
-  line-height: 1.25;
+  display: block;
+
+  width: clamp(80px, 8vw, 130px);
+  height: clamp(70px, 8vw, 115px);
+
+  object-fit: contain;
 
   cursor: grab;
   user-select: none;
   touch-action: none;
+  -webkit-user-drag: none;
+
+  filter: drop-shadow(
+    4px 7px 4px rgba(0,0,0,.22)
+  );
+
+  transition: transform .2s ease;
+}
+
+.snack:hover {
+  transform: scale(1.13) rotate(-4deg);
 }
 
 .snack:active {
@@ -127,44 +171,105 @@ button {
   opacity: .25;
 }
 
-#pool .snack:not(:last-child)::after {
-  content: ",";
+/* FOTO'S DIE AL IN EEN CATEGORIE STAAN */
+
+.tier-items .snack {
+  width: clamp(75px, 7vw, 110px);
+  height: 85px;
 }
 
-/* GEPLAATSTE SNACKS */
+/* =========================
+   LOSSE SNACKS ONDERAAN
+========================= */
 
-.tier-items {
+#snack-section {
+  margin:
+    35px 5vw 0
+    clamp(170px, 24vw, 380px);
+
+  padding-top: 25px;
+}
+
+.snack-heading {
+  font-size: clamp(20px, 2.5vw, 36px);
+  margin: 0 0 15px;
+  font-weight: 900;
+}
+
+#pool {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   align-content: center;
-  gap: 6px 12px;
 
-  min-height: 40px;
-  padding: 8px;
-}
+  gap: 15px 20px;
 
-.tier-items .snack {
-  font-size: clamp(14px, 1.4vw, 22px);
-}
+  min-height: 140px;
+  padding: 20px 10px;
 
-/* HIGHLIGHT BIJ SLEPEN */
-
-.drop-active {
-  background: rgba(255,190,54,.14);
-  outline: 2px dashed var(--yellow);
   border-radius: 8px;
 }
 
-/* RESET */
+/* =========================
+   FALLBACK ALS FOTO ONTBREEKT
+========================= */
+
+.snack-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 120px;
+  min-height: 75px;
+
+  padding: 10px;
+
+  background: var(--yellow);
+  color: var(--pink);
+
+  border-radius: 8px;
+
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: center;
+
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.tier-items .snack-placeholder {
+  width: 100px;
+  min-height: 60px;
+  font-size: 12px;
+}
+
+/* =========================
+   DROP EFFECT
+========================= */
+
+.drop-active {
+  background: rgba(255,190,54,.16);
+  outline: 2px dashed var(--yellow);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+/* =========================
+   RESETKNOP
+========================= */
 
 .reset {
-  align-self: flex-start;
+  margin-top: 25px;
+
   background: transparent;
   color: var(--yellow);
+
   border: 2px solid var(--yellow);
-  padding: 9px 18px;
-  font-size: 13px;
+
+  padding: 12px 22px;
+
+  font-size: 15px;
   font-weight: 900;
 }
 
@@ -179,8 +284,10 @@ button {
 
 #plateau-page {
   display: none;
+
   min-height: 100vh;
   padding: 35px;
+
   text-align: center;
 }
 
@@ -192,25 +299,36 @@ button {
   display: none;
 }
 
-.back {
+#home-button.hidden {
+  display: none;
+}
+
+/* TERUG VAN PLATEAU */
+
+.back-plateau {
   position: absolute;
   top: 25px;
   left: 25px;
 
   background: var(--yellow);
   color: var(--pink);
+
   border: none;
 
-  padding: 12px 26px;
-  font-size: 18px;
+  padding: 10px 24px;
+
+  font-size: 17px;
   font-weight: 900;
 }
 
+/* TITEL */
+
 .plateau-title {
   margin: 75px 0 0;
+
   font-size: clamp(55px, 9vw, 145px);
-  line-height: 1;
   font-weight: 900;
+  line-height: 1;
 }
 
 .plateau-subtitle {
@@ -218,7 +336,9 @@ button {
   font-size: clamp(16px, 2vw, 28px);
 }
 
-/* FRITUURPLATEAU */
+/* =========================
+   FRITUURPLATEAU
+========================= */
 
 .plateau {
   position: relative;
@@ -234,7 +354,8 @@ button {
   align-items: center;
   align-content: center;
   justify-content: center;
-  gap: 5px;
+
+  gap: 8px;
 
   background: #F5EEDF;
 
@@ -248,17 +369,13 @@ button {
   transform: rotate(-1deg);
 }
 
-/* FOTO'S OP PLATEAU */
+/* SNACKFOTO'S OP PLATEAU */
 
 .plateau-snack {
-  width: clamp(100px, 17vw, 190px);
-  height: 145px;
+  width: clamp(110px, 17vw, 195px);
+  height: 150px;
 
   object-fit: contain;
-
-  background: transparent;
-  border: none;
-  padding: 0;
 
   transform: rotate(var(--rotation));
 
@@ -270,13 +387,11 @@ button {
 }
 
 .plateau-snack:hover {
-  transform:
-    rotate(0deg)
-    scale(1.15);
+  transform: rotate(0deg) scale(1.15);
   z-index: 10;
 }
 
-/* TEKST ALS FOTO ONTBREEKT */
+/* FALLBACK OP PLATEAU */
 
 .snack-fallback {
   display: flex;
@@ -287,10 +402,12 @@ button {
   min-height: 100px;
 
   padding: 15px;
+
   background: var(--yellow);
   color: var(--pink);
 
   border-radius: 12px;
+
   font-size: 18px;
   text-align: center;
 
@@ -302,54 +419,95 @@ button {
   font-size: 25px;
 }
 
-/* SLEEP-EFFECT */
+/* =========================
+   SLEEP-EFFECT
+========================= */
 
 .floating {
   position: fixed;
   z-index: 9999;
+
   pointer-events: none;
 
-  padding: 9px 14px;
-  border-radius: 5px;
+  width: 140px;
+  height: 125px;
+
+  object-fit: contain;
+
+  transform: translate(-50%, -50%);
+
+  filter: drop-shadow(
+    5px 8px 5px rgba(0,0,0,.3)
+  );
+}
+
+.floating-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px;
 
   background: var(--yellow);
   color: var(--pink);
 
-  font-size: 22px;
-  font-weight: 900;
-  white-space: nowrap;
+  border-radius: 8px;
 
-  transform: translate(-50%, -50%);
+  font-size: 17px;
+  text-align: center;
 }
 
 /* =========================
-   RESPONSIVE
+   MOBIEL
 ========================= */
 
 @media (max-width: 800px) {
 
   #ranking {
-    grid-template-columns: 135px 1fr;
-    column-gap: 15px;
-    padding-right: 15px;
+    padding-top: 95px;
+    padding-right: 12px;
+  }
+
+  .tier {
+    grid-template-columns: 125px minmax(0, 1fr);
+    column-gap: 12px;
+    min-height: 85px;
   }
 
   .tier-label {
-    font-size: 17px;
-    height: 55px;
+    min-height: 55px;
+    font-size: 16px;
+  }
+
+  .tier-items {
+    min-height: 75px;
+    gap: 5px;
+    padding: 5px;
   }
 
   .snack {
-    font-size: 18px;
+    width: 70px;
+    height: 70px;
   }
 
   .tier-items .snack {
-    font-size: 15px;
+    width: 60px;
+    height: 60px;
+  }
+
+  #snack-section {
+    margin-left: 20px;
+    margin-right: 10px;
+  }
+
+  #pool {
+    gap: 8px;
   }
 
   .plateau {
     width: 100%;
     min-height: 330px;
+
     padding: 20px;
     border-width: 12px;
   }
@@ -369,14 +527,28 @@ button {
 <body>
 
 <!-- =========================
-     RANKING SCHERM
+     TERUG NAAR INDEX.HTML
+========================= -->
+
+<a href="index.html"
+   class="back-home"
+   id="home-button">
+  ← TERUG
+</a>
+
+<!-- =========================
+     TIERLIST
 ========================= -->
 
 <main id="ranking">
 
   <div id="tiers"></div>
 
-  <div id="right-side">
+  <section id="snack-section">
+
+    <h2 class="snack-heading">
+      JOUW SNACKS
+    </h2>
 
     <div id="pool" data-category="pool"></div>
 
@@ -384,7 +556,7 @@ button {
       RESET RANKING
     </button>
 
-  </div>
+  </section>
 
 </main>
 
@@ -394,7 +566,7 @@ button {
 
 <section id="plateau-page">
 
-  <button class="back" id="back">
+  <button class="back-plateau" id="back">
     ← TERUG
   </button>
 
@@ -427,7 +599,7 @@ const categories = [
 ];
 
 /* =========================
-   ALLE SNACKS
+   SNACKS
 ========================= */
 
 const snacks = [
@@ -459,10 +631,26 @@ const snacks = [
 ];
 
 /* =========================
+   FOTO BESTANDSNAMEN
+========================= */
+
+function snackImagePath(name) {
+
+  const filename = name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/['’]/g, "")
+    .replace(/\s+/g, "-");
+
+  return "snacks/" + filename + ".png";
+}
+
+/* =========================
    OPSLAG
 ========================= */
 
-const storageKey = "friesfriday-ranking-v2";
+const storageKey = "friesfriday-ranking-v3";
 
 let ranking = {};
 
@@ -474,10 +662,14 @@ try {
 }
 
 function save() {
-  localStorage.setItem(
-    storageKey,
-    JSON.stringify(ranking)
-  );
+  try {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify(ranking)
+    );
+  } catch (error) {
+    console.warn("Opslaan niet gelukt:", error);
+  }
 }
 
 /* =========================
@@ -488,27 +680,41 @@ const tiers = document.getElementById("tiers");
 const pool = document.getElementById("pool");
 
 /* =========================
-   SNACK MAKEN
+   SNACKFOTO MAKEN
 ========================= */
 
 function createSnack(name) {
 
-  const el = document.createElement("span");
+  const img = document.createElement("img");
 
-  el.className = "snack";
-  el.textContent = name;
-  el.dataset.snack = name;
+  img.className = "snack";
+  img.src = snackImagePath(name);
+  img.alt = name;
+  img.title = name;
+  img.dataset.snack = name;
+  img.draggable = false;
 
-  el.addEventListener(
-    "pointerdown",
-    startDrag
-  );
+  img.addEventListener("pointerdown", startDrag);
 
-  return el;
+  img.onerror = () => {
+
+    const fallback = document.createElement("div");
+
+    fallback.className = "snack-placeholder";
+    fallback.textContent = name;
+    fallback.title = name;
+    fallback.dataset.snack = name;
+
+    fallback.addEventListener("pointerdown", startDrag);
+
+    img.replaceWith(fallback);
+  };
+
+  return img;
 }
 
 /* =========================
-   RENDEREN
+   TIERLIST RENDEREN
 ========================= */
 
 function render() {
@@ -522,12 +728,14 @@ function render() {
     row.className = "tier";
 
     const label = document.createElement("button");
+
     label.className = "tier-label";
     label.textContent = category;
 
     label.onclick = () => openPlateau(category);
 
     const area = document.createElement("div");
+
     area.className = "tier-items";
     area.dataset.category = category;
 
@@ -576,6 +784,8 @@ function startDrag(e) {
 
   if (e.button !== 0) return;
 
+  e.preventDefault();
+
   const original = e.currentTarget;
 
   drag = {
@@ -589,20 +799,9 @@ function startDrag(e) {
 
   original.setPointerCapture(e.pointerId);
 
-  original.addEventListener(
-    "pointermove",
-    onDrag
-  );
-
-  original.addEventListener(
-    "pointerup",
-    endDrag
-  );
-
-  original.addEventListener(
-    "pointercancel",
-    cancelDrag
-  );
+  original.addEventListener("pointermove", onDrag);
+  original.addEventListener("pointerup", endDrag);
+  original.addEventListener("pointercancel", cancelDrag);
 }
 
 function onDrag(e) {
@@ -620,11 +819,29 @@ function onDrag(e) {
 
     drag.moved = true;
 
-    drag.ghost = document.createElement("div");
-    drag.ghost.className = "floating";
-    drag.ghost.textContent = drag.name;
+    const ghost = document.createElement("img");
 
-    document.body.appendChild(drag.ghost);
+    ghost.className = "floating";
+    ghost.src = snackImagePath(drag.name);
+    ghost.alt = drag.name;
+
+    ghost.onerror = () => {
+
+      const fallback = document.createElement("div");
+
+      fallback.className = "floating floating-text";
+      fallback.textContent = drag.name;
+
+      fallback.style.left = ghost.style.left;
+      fallback.style.top = ghost.style.top;
+
+      ghost.replaceWith(fallback);
+      drag.ghost = fallback;
+    };
+
+    drag.ghost = ghost;
+
+    document.body.appendChild(ghost);
 
     drag.original.classList.add("dragging");
   }
@@ -634,9 +851,7 @@ function onDrag(e) {
 
   document
     .querySelectorAll(".drop-active")
-    .forEach(el => {
-      el.classList.remove("drop-active");
-    });
+    .forEach(el => el.classList.remove("drop-active"));
 
   const target = document.elementFromPoint(
     e.clientX,
@@ -659,26 +874,13 @@ function cleanupDrag() {
   drag.original.classList.remove("dragging");
   drag.ghost?.remove();
 
-  drag.original.removeEventListener(
-    "pointermove",
-    onDrag
-  );
-
-  drag.original.removeEventListener(
-    "pointerup",
-    endDrag
-  );
-
-  drag.original.removeEventListener(
-    "pointercancel",
-    cancelDrag
-  );
+  drag.original.removeEventListener("pointermove", onDrag);
+  drag.original.removeEventListener("pointerup", endDrag);
+  drag.original.removeEventListener("pointercancel", cancelDrag);
 
   document
     .querySelectorAll(".drop-active")
-    .forEach(el => {
-      el.classList.remove("drop-active");
-    });
+    .forEach(el => el.classList.remove("drop-active"));
 
   drag = null;
 }
@@ -695,7 +897,7 @@ function endDrag(e) {
     e.clientY
   );
 
-  let zone = target?.closest(
+  const zone = target?.closest(
     ".tier-items, #pool, .tier-label"
   );
 
@@ -728,22 +930,6 @@ function cancelDrag() {
 }
 
 /* =========================
-   FOTO'S VAN SNACKS
-========================= */
-
-function snackImagePath(name) {
-
-  const filename = name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/['’]/g, "")
-    .replace(/\s+/g, "-");
-
-  return "snacks/" + filename + ".png";
-}
-
-/* =========================
    PLATEAU OPENEN
 ========================= */
 
@@ -751,6 +937,10 @@ function openPlateau(category) {
 
   document
     .getElementById("ranking")
+    .classList.add("hidden");
+
+  document
+    .getElementById("home-button")
     .classList.add("hidden");
 
   document
@@ -772,6 +962,7 @@ function openPlateau(category) {
   if (selected.length === 0) {
 
     const empty = document.createElement("p");
+
     empty.className = "empty";
     empty.textContent = "Nog geen snacks op dit plateau!";
 
@@ -819,7 +1010,7 @@ function openPlateau(category) {
 }
 
 /* =========================
-   TERUGKNOP
+   TERUG NAAR TIERLIST
 ========================= */
 
 document.getElementById("back").onclick = () => {
@@ -830,6 +1021,10 @@ document.getElementById("back").onclick = () => {
 
   document
     .getElementById("ranking")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("home-button")
     .classList.remove("hidden");
 };
 
