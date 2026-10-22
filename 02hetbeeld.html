@@ -1,142 +1,460 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Fries Friday - Het beeld</title>
+<title>Fries Friday — Het beeld</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;700;800;900&display=swap" rel="stylesheet">
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
+<style>
+:root {
+  --yellow: #FFDA42;
+  --red: #EF2F35;
+  --cream: #FFF6DD;
+}
 
-    body {
-      background: #e9b62e;
-      cursor: crosshair;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    .gallery {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden;
-    }
+html {
+  scroll-behavior: smooth;
+}
 
-    .gallery img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 0.35s ease;
-      pointer-events: none;
-    }
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--yellow);
+  color: var(--cream);
+}
 
-    .gallery img.active {
-      opacity: 1;
-    }
+/* DESKTOP */
 
-    @media (max-width: 768px) {
-      .gallery img {
-        object-fit: cover;
-      }
-    }
-  </style>
+.desktop-gallery {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+.desktop-gallery .photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+
+.desktop-gallery .photo.active {
+  opacity: 1;
+}
+
+.desktop-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: clamp(20px, 4vw, 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+  text-shadow: 0 2px 15px rgba(0,0,0,.3);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.chapter {
+  font-size: clamp(14px, 1.4vw, 20px);
+  font-weight: 900;
+}
+
+.counter {
+  font-size: clamp(20px, 2.5vw, 36px);
+  font-weight: 900;
+}
+
+.bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.location {
+  font-size: clamp(35px, 6vw, 105px);
+  font-weight: 900;
+  line-height: .9;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.hint {
+  font-size: clamp(12px, 1.2vw, 17px);
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  height: 7px;
+  width: 25%;
+  background: var(--cream);
+  transition: width .35s ease;
+}
+
+/* MOBILE: EEN ANDERE LEZING */
+
+.mobile-gallery {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  html {
+    scroll-snap-type: y proximity;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .desktop-gallery {
+    display: none;
+  }
+
+  .mobile-gallery {
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-header {
+    min-height: 30svh;
+    background: var(--red);
+    color: var(--yellow);
+    padding: 30px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 35px;
+  }
+
+  .mobile-header .chapter {
+    font-size: 15px;
+  }
+
+  .mobile-header h1 {
+    font-size: clamp(44px, 12vw, 85px);
+    font-weight: 900;
+    line-height: .9;
+    text-transform: uppercase;
+  }
+
+  .mobile-header p {
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 15px;
+  }
+
+  .mobile-photo {
+    position: relative;
+    width: 100%;
+    min-height: 70svh;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: start;
+  }
+
+  .mobile-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .mobile-info {
+    padding: 25px 22px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 15px;
+  }
+
+  .mobile-info h2 {
+    font-size: clamp(29px, 8vw, 55px);
+    font-weight: 900;
+    line-height: .95;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-info span {
+    font-size: 18px;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .mobile-photo.yellow {
+    background: var(--yellow);
+    color: var(--red);
+  }
+
+  .mobile-photo.red {
+    background: var(--red);
+    color: var(--yellow);
+  }
+
+  .mobile-footer {
+    background: var(--yellow);
+    color: var(--red);
+    padding: 30px 22px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 900;
+  }
+}
+
+@media (max-width: 380px) {
+  .mobile-info {
+    padding: 18px 15px 25px;
+  }
+
+  .mobile-info h2 {
+    font-size: 27px;
+  }
+
+  .mobile-info span {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <main class="gallery" id="gallery">
+<!-- DESKTOPVERSIE -->
 
+<main class="desktop-gallery" id="gallery">
+
+  <img
+    class="photo active"
+    src="CHAPELUUR, GENT.png"
+    alt="Frietjes bij Chapeluur in Gent"
+  >
+
+  <img
+    class="photo"
+    src="JOEY, GENT.png"
+    alt="Frietjes bij Joey in Gent"
+  >
+
+  <img
+    class="photo"
+    src="MANHATTENS, LEUVEN.png"
+    alt="Frietjes bij Manhattens in Leuven"
+  >
+
+  <img
+    class="photo"
+    src="SPOOR 33, LINTER.png"
+    alt="Frietjes bij Spoor 33 in Linter"
+  >
+
+  <div class="desktop-overlay">
+
+    <div class="top">
+      <div class="chapter">02. HET BEELD</div>
+      <div class="counter" id="counter">01 / 04</div>
+    </div>
+
+    <div class="bottom">
+      <div class="location" id="location">
+        CHAPELUUR<br>GENT
+      </div>
+
+      <div class="hint">
+        BEWEEG JE MUIS.<br>
+        ONTDEK DE FRIET.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="progress" id="progress"></div>
+
+</main>
+
+
+<!-- MOBIELE VERSIE -->
+
+<section class="mobile-gallery">
+
+  <header class="mobile-header">
+    <div class="chapter">02. HET BEELD</div>
+
+    <div>
+      <h1>FRIET<br>IS OVERAL.</h1>
+      <p>SCROLL EN ONTDEK ↓</p>
+    </div>
+  </header>
+
+  <article class="mobile-photo yellow">
     <img
       src="CHAPELUUR, GENT.png"
-      class="active"
-      alt="Chapeluur Gent"
+      alt="Frietjes bij Chapeluur Gent"
+      loading="lazy"
     >
+    <div class="mobile-info">
+      <h2>CHAPELUUR<br>GENT</h2>
+      <span>01 / 04</span>
+    </div>
+  </article>
 
+  <article class="mobile-photo red">
     <img
       src="JOEY, GENT.png"
-      alt="Joey Gent"
+      alt="Frietjes bij Joey Gent"
+      loading="lazy"
     >
+    <div class="mobile-info">
+      <h2>JOEY<br>GENT</h2>
+      <span>02 / 04</span>
+    </div>
+  </article>
 
+  <article class="mobile-photo yellow">
     <img
       src="MANHATTENS, LEUVEN.png"
-      alt="Manhattens Leuven"
+      alt="Frietjes bij Manhattens Leuven"
+      loading="lazy"
     >
+    <div class="mobile-info">
+      <h2>MANHATTENS<br>LEUVEN</h2>
+      <span>03 / 04</span>
+    </div>
+  </article>
 
+  <article class="mobile-photo red">
     <img
       src="SPOOR 33, LINTER.png"
-      alt="Spoor 33 Linter"
+      alt="Frietjes bij Spoor 33 Linter"
+      loading="lazy"
     >
+    <div class="mobile-info">
+      <h2>SPOOR 33<br>LINTER</h2>
+      <span>04 / 04</span>
+    </div>
+  </article>
 
-  </main>
+  <footer class="mobile-footer">
+    FRIES FRIDAY ©
+  </footer>
 
-  <script>
-    const gallery = document.getElementById("gallery");
-    const images = gallery.querySelectorAll("img");
+</section>
 
-    let currentIndex = 0;
-    let lastX = null;
-    let lastY = null;
-    let distance = 0;
 
-    const changeDistance = 130;
+<script>
+const gallery = document.getElementById("gallery");
+const images = gallery.querySelectorAll(".photo");
 
-    function showImage(index) {
-      images[currentIndex].classList.remove("active");
+const counter = document.getElementById("counter");
+const locationText = document.getElementById("location");
+const progress = document.getElementById("progress");
 
-      currentIndex = index % images.length;
+const locations = [
+  "CHAPELUUR<br>GENT",
+  "JOEY<br>GENT",
+  "MANHATTENS<br>LEUVEN",
+  "SPOOR 33<br>LINTER"
+];
 
-      images[currentIndex].classList.add("active");
-    }
+let currentIndex = 0;
+let lastX = null;
+let lastY = null;
+let distance = 0;
 
-    gallery.addEventListener("pointermove", (event) => {
+const changeDistance = 130;
 
-      if (event.pointerType === "touch") return;
+function showImage(index) {
 
-      if (lastX === null) {
-        lastX = event.clientX;
-        lastY = event.clientY;
-        return;
-      }
+  images[currentIndex].classList.remove("active");
 
-      const dx = event.clientX - lastX;
-      const dy = event.clientY - lastY;
+  currentIndex = index % images.length;
 
-      distance += Math.sqrt(dx * dx + dy * dy);
+  images[currentIndex].classList.add("active");
 
-      lastX = event.clientX;
-      lastY = event.clientY;
+  counter.textContent =
+    String(currentIndex + 1).padStart(2, "0")
+    + " / 04";
 
-      if (distance >= changeDistance) {
-        showImage(currentIndex + 1);
-        distance = 0;
-      }
-    });
+  locationText.innerHTML = locations[currentIndex];
 
-    gallery.addEventListener("pointerleave", () => {
-      lastX = null;
-      lastY = null;
-      distance = 0;
-    });
+  progress.style.width =
+    ((currentIndex + 1) / images.length * 100) + "%";
+}
 
-    // Op smartphone: tik om te wisselen
-    gallery.addEventListener("click", () => {
-      showImage(currentIndex + 1);
-    });
-  </script>
+gallery.addEventListener("pointermove", (event) => {
+
+  if (event.pointerType === "touch") return;
+
+  if (lastX === null) {
+    lastX = event.clientX;
+    lastY = event.clientY;
+    return;
+  }
+
+  const dx = event.clientX - lastX;
+  const dy = event.clientY - lastY;
+
+  distance += Math.sqrt(dx * dx + dy * dy);
+
+  lastX = event.clientX;
+  lastY = event.clientY;
+
+  if (distance >= changeDistance) {
+    showImage(currentIndex + 1);
+    distance = 0;
+  }
+});
+
+gallery.addEventListener("pointerleave", () => {
+  lastX = null;
+  lastY = null;
+  distance = 0;
+});
+
+// Voor tablets met muis of trackpad
+// blijft de desktopinteractie beschikbaar
+// zolang het scherm breder is dan 768px.
+
+</script>
 
 </body>
 </html>
