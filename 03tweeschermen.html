@@ -1,383 +1,285 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FR/ESFR/DAY — Bestelling #3</title>
+  <title>FRIESFRIDAY — Bestelling #3</title>
 
   <style>
-    :root {
-      --pink: #f32d4d;
-      --yellow: #ffbf32;
-    }
-
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --rood: #f3294b;
+      --geel: #ffbd32;
     }
 
     body {
       width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--pink);
-      color: var(--yellow);
-    }
-
-    .page {
-      position: relative;
-      width: 100vw;
       height: 100vh;
-      height: 100dvh;
       overflow: hidden;
-      isolation: isolate;
+      background: var(--rood);
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-    /* De diagonale gele strook */
-    .stripe {
+    /* Gele diagonale strook */
+    .strook {
+      position: fixed;
+      width: 40vw;
+      height: 160vh;
+      left: 50%;
+      top: 50%;
+      background: var(--geel);
+      transform: translate(-50%, -50%) rotate(45deg);
+      z-index: 0;
+    }
+
+    /* Terugknop */
+    .terug {
       position: absolute;
-      z-index: -1;
-      inset: -60%;
-      background: linear-gradient(
-        135deg,
-        var(--pink) 0%,
-        var(--pink) 38%,
-        var(--yellow) 38%,
-        var(--yellow) 62%,
-        var(--pink) 62%,
-        var(--pink) 100%
-      );
-      pointer-events: none;
+      top: 35px;
+      left: 4.3%;
+      z-index: 5;
+      color: var(--geel);
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 800;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+
+    .terug:hover {
+      opacity: 0.65;
     }
 
     /* Titel linksboven */
-    .heading {
+    .titel {
       position: absolute;
-      top: 4.5%;
-      left: 4.5%;
+      top: 85px;
+      left: 4.3%;
       z-index: 2;
+      color: var(--geel);
       text-transform: uppercase;
-      line-height: 0.98;
-      pointer-events: none;
     }
 
-    .heading h1 {
-      font-size: clamp(24px, 4vw, 58px);
+    .titel h1 {
+      font-size: clamp(28px, 3.5vw, 56px);
       font-weight: 900;
-      letter-spacing: -1.5px;
-    }
-
-    .heading p {
-      margin-top: 5px;
-      font-size: clamp(13px, 2vw, 30px);
-      font-weight: 900;
-    }
-
-    /* Het woord in het midden van de gele strook */
-    .word-container {
-      position: absolute;
-      inset: 20% 8% 20%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .word {
-      color: var(--pink);
-      text-transform: uppercase;
-      font-weight: 900;
-      font-size: clamp(23px, 4vw, 54px);
-      text-align: center;
       line-height: 1;
+    }
+
+    .titel p {
+      margin-top: 5px;
+      font-size: clamp(16px, 1.8vw, 29px);
+      font-weight: 900;
+    }
+
+    /* Woorden in het midden */
+    .woorden {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 78%;
+      gap: 35px;
+      color: var(--rood);
+      text-transform: uppercase;
+      font-size: clamp(20px, 2vw, 32px);
+      font-weight: 900;
       white-space: nowrap;
-      letter-spacing: -1px;
-      opacity: 1;
-      transform: translateX(0);
     }
 
-    .word.enter-right {
-      animation: enterRight 0.28s ease-out both;
+    .woord {
+      display: inline-block;
+      animation: verschijnen 0.35s ease both;
     }
 
-    .word.enter-left {
-      animation: enterLeft 0.28s ease-out both;
-    }
-
-    @keyframes enterRight {
+    @keyframes verschijnen {
       from {
         opacity: 0;
-        transform: translateX(65px);
+        transform: translateY(12px);
       }
       to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
       }
     }
 
-    @keyframes enterLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-65px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+    /* Navigatiepijlen */
+    .navigatie {
+      position: absolute;
+      left: 50%;
+      bottom: 45px;
+      transform: translateX(-50%);
+      z-index: 4;
+      display: flex;
+      gap: 25px;
     }
 
-    /* FR/ESFR/DAY onderaan */
+    .pijl {
+      width: 55px;
+      height: 55px;
+      border: 2px solid var(--geel);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--geel);
+      font-size: 30px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .pijl:hover {
+      background: var(--geel);
+      color: var(--rood);
+    }
+
+    .pijl:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    /* Logo rechtsonder */
     .logo {
       position: absolute;
-      bottom: 3.5%;
-      left: 3.5%;
+      right: 3%;
+      bottom: 45px;
       z-index: 2;
-      font-size: clamp(34px, 7vw, 100px);
-      font-weight: 1000;
+      color: var(--geel);
+      font-size: clamp(30px, 5.2vw, 82px);
+      font-weight: 900;
       font-style: italic;
-      letter-spacing: -3px;
-      line-height: 1;
-      white-space: nowrap;
-      pointer-events: none;
+      letter-spacing: -4px;
+      text-transform: uppercase;
     }
 
-    .logo .slash {
+    .logo span {
       display: inline-block;
-      font-weight: 400;
-      transform: skew(-12deg);
-      margin: 0 0.02em;
+      transform: skew(-8deg);
     }
 
-    /* Onzichtbare klikzones links en rechts */
-    .nav {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      z-index: 5;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .nav.left {
-      left: 0;
-      cursor: w-resize;
-    }
-
-    .nav.right {
-      right: 0;
-      cursor: e-resize;
-    }
-
-    .nav:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: -8px;
-    }
-
-    /* Kleine voortgangsindicator */
-    .progress {
-      position: absolute;
-      right: 4.5%;
-      bottom: 5%;
-      z-index: 3;
-      font-size: 14px;
-      font-weight: 800;
-      pointer-events: none;
-    }
-
-    /* Liggend scherm: diagonale strook zoals op de tweede mock-up */
-    @media (orientation: landscape) {
-      .stripe {
-        background: linear-gradient(
-          45deg,
-          var(--pink) 0%,
-          var(--pink) 38%,
-          var(--yellow) 38%,
-          var(--yellow) 62%,
-          var(--pink) 62%,
-          var(--pink) 100%
-        );
+    /* Aanpassing voor kleinere schermen */
+    @media (max-width: 700px) {
+      .strook {
+        width: 65vw;
       }
 
-      .heading {
-        top: 8%;
-        left: 4.3%;
+      .titel {
+        top: 100px;
       }
 
-      .word-container {
-        inset: 15% 8%;
-      }
-
-      .logo {
-        left: auto;
-        right: 3%;
-        bottom: 5%;
-      }
-    }
-
-    /* Rechtopstaand scherm: mobiel */
-    @media (orientation: portrait) {
-      .stripe {
-        inset: -50%;
-      }
-
-      .heading {
-        top: 4%;
-        left: 5%;
-      }
-
-      .word-container {
-        inset: 22% 4% 25%;
-      }
-
-      .word {
-        font-size: clamp(20px, 6vw, 44px);
-        letter-spacing: -0.7px;
+      .woorden {
+        width: 90%;
+        gap: 12px;
+        flex-wrap: wrap;
+        text-align: center;
         white-space: normal;
-        max-width: 100%;
       }
 
       .logo {
-        left: 4%;
-        bottom: 3%;
-        font-size: clamp(35px, 9vw, 76px);
+        right: 5%;
+        bottom: 125px;
         letter-spacing: -2px;
       }
 
-      .progress {
-        right: 5%;
-        bottom: 5%;
-        font-size: 12px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .word.enter-right,
-      .word.enter-left {
-        animation-duration: 0.01ms;
+      .navigatie {
+        bottom: 35px;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
 
-    <div class="stripe"></div>
+  <div class="strook"></div>
 
-    <header class="heading">
-      <h1>Bestelling #3</h1>
-      <p>De Frietketel, Gent</p>
-    </header>
+  <a class="terug" href="index.html">← Terug</a>
 
-    <section class="word-container" aria-live="polite">
-      <div class="word" id="word">TOMATENKETCHUP</div>
-    </section>
+  <header class="titel">
+    <h1>Bestelling #3</h1>
+    <p>De Frietketel, Gent</p>
+  </header>
 
-    <div class="logo" aria-label="FR ESFR DAY">
-      FR<span class="slash">/</span>ESFR<span class="slash">/</span>DAY
+  <main>
+    <div class="woorden" id="woorden" aria-live="polite">
+      <span class="woord">Tomatenketchup</span>
     </div>
 
-    <div class="progress" id="progress">01 / 04</div>
-
-    <button class="nav left"
-      id="previous"
-      aria-label="Vorig woord"></button>
-
-    <button class="nav right"
-      id="next"
-      aria-label="Volgend woord"></button>
-
+    <nav class="navigatie" aria-label="Woordnavigatie">
+      <button class="pijl" id="vorige" aria-label="Vorig woord">
+        ←
+      </button>
+      <button class="pijl" id="volgende" aria-label="Volgend woord">
+        →
+      </button>
+    </nav>
   </main>
 
+  <div class="logo"><span>FR</span><span>IES</span><span>FR</span><span>IDAY</span></div>
+
   <script>
-    const words = [
-      "TOMATENKETCHUP",
-      "VIANDEL",
-      "CHICKENNUGGETS",
-      "PUNTZAK"
+    const woorden = [
+      "Tomatenketchup",
+      "Viandel",
+      "Chicken nuggets",
+      "Puntzak"
     ];
 
-    let currentIndex = 0;
+    let huidigWoord = 0;
 
-    const wordElement = document.getElementById("word");
-    const progressElement = document.getElementById("progress");
+    const woordenContainer = document.getElementById("woorden");
+    const vorigeKnop = document.getElementById("vorige");
+    const volgendeKnop = document.getElementById("volgende");
 
-    function showWord(direction) {
-      // Animatie opnieuw starten
-      wordElement.classList.remove("enter-left", "enter-right");
-      void wordElement.offsetWidth;
+    function toonWoord() {
+      woordenContainer.innerHTML = "";
 
-      // Update het huidige woord
-      wordElement.textContent = words[currentIndex];
+      const woord = document.createElement("span");
+      woord.className = "woord";
+      woord.textContent = woorden[huidigWoord];
 
-      // Animatie volgens de navigatierichting
-      wordElement.classList.add(
-        direction === "right" ? "enter-right" : "enter-left"
-      );
+      woordenContainer.appendChild(woord);
 
-      // Update de teller
-      const number = String(currentIndex + 1).padStart(2, "0");
-      const total = String(words.length).padStart(2, "0");
-      progressElement.textContent = `${number} / ${total}`;
+      vorigeKnop.disabled = huidigWoord === 0;
+      volgendeKnop.disabled = huidigWoord === woorden.length - 1;
     }
 
-    function nextWord() {
-      if (currentIndex < words.length - 1) {
-        currentIndex++;
-        showWord("right");
+    volgendeKnop.addEventListener("click", () => {
+      if (huidigWoord < woorden.length - 1) {
+        huidigWoord++;
+        toonWoord();
       }
-    }
+    });
 
-    function previousWord() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        showWord("left");
+    vorigeKnop.addEventListener("click", () => {
+      if (huidigWoord > 0) {
+        huidigWoord--;
+        toonWoord();
       }
-    }
-
-    // Klikken op de linker- en rechterhelft
-    document.getElementById("next").addEventListener("click", nextWord);
-    document.getElementById("previous").addEventListener("click", previousWord);
+    });
 
     // Navigeren met de pijltjestoetsen
     document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") nextWord();
-      if (event.key === "ArrowLeft") previousWord();
+      if (event.key === "ArrowRight" &&
+          huidigWoord < woorden.length - 1) {
+        huidigWoord++;
+        toonWoord();
+      }
+
+      if (event.key === "ArrowLeft" && huidigWoord > 0) {
+        huidigWoord--;
+        toonWoord();
+      }
     });
 
-    // Swipen op een touchscreen
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    document.addEventListener("touchstart", (event) => {
-      touchStartX = event.changedTouches[0].clientX;
-      touchStartY = event.changedTouches[0].clientY;
-    }, { passive: true });
-
-    document.addEventListener("touchend", (event) => {
-      const touchEndX = event.changedTouches[0].clientX;
-      const touchEndY = event.changedTouches[0].clientY;
-
-      const deltaX = touchEndX - touchStartX;
-      const deltaY = touchEndY - touchStartY;
-
-      // Alleen horizontale swipes tellen mee
-      if (Math.abs(deltaX) > 45 &&
-          Math.abs(deltaX) > Math.abs(deltaY)) {
-        if (deltaX < 0) {
-          nextWord();
-        } else {
-          previousWord();
-        }
-      }
-    }, { passive: true });
+    toonWoord();
   </script>
+
 </body>
 </html>
