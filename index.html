@@ -26,28 +26,14 @@
     top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;
     display:flex;flex-direction:column;align-items:flex-end;gap:10px;
   }
-  .controls button, .menu a{
-    font:700 14px/1 "Jost","Futura","Century Gothic",sans-serif;
-  }
   .btn{
+    font:700 14px/1 "Jost","Futura","Century Gothic",sans-serif;
     color:var(--yellow);background:transparent;border:2px solid var(--yellow);
     border-radius:999px;padding:10px 18px;cursor:pointer;
+    text-decoration:none;display:inline-block;
   }
-  .btn:hover,.btn[aria-expanded="true"]{background:var(--yellow);color:var(--red)}
-  .btn:focus-visible,.menu a:focus-visible{outline:3px solid #fff;outline-offset:3px}
-
-  /* Uitklapmenu onder de menuknop */
-  .menu{
-    list-style:none;margin:0;padding:8px;
-    display:none;flex-direction:column;gap:2px;min-width:180px;
-    background:var(--red);border:2px solid var(--yellow);border-radius:18px;
-  }
-  .menu.open{display:flex}
-  .menu a{
-    display:block;padding:12px 14px;border-radius:10px;
-    color:var(--yellow);text-decoration:none;font-size:16px;
-  }
-  .menu a:hover{background:var(--yellow);color:var(--red)}
+  .btn:hover{background:var(--yellow);color:var(--red)}
+  .btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
 </style>
 </head>
 <body>
@@ -62,14 +48,7 @@
 
   <div class="controls">
     <button class="btn replay" type="button">Replay</button>
-    <button class="btn menu-btn" type="button" aria-expanded="false" aria-controls="site-menu">Menu</button>
-    <!-- Pas hier de links aan naar de pagina's van je website -->
-    <ul class="menu" id="site-menu">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="over-ons.html">Over ons</a></li>
-      <li><a href="menu.html">Menukaart</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
+    <a class="btn menu-btn" href="03tweeschermen.html">Menu</a>
   </div>
 
 <script>
@@ -162,24 +141,6 @@
   document.querySelector(".replay").addEventListener("click", play);
   var t; window.addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(play, 250); });
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(play);
-
-  // Menu: open/sluit met de knop, sluit bij klik buiten het menu of op Escape
-  var menuBtn = document.querySelector(".menu-btn");
-  var menu = document.getElementById("site-menu");
-  function setMenu(open){
-    menu.classList.toggle("open", open);
-    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-  }
-  menuBtn.addEventListener("click", function(e){
-    e.stopPropagation();
-    setMenu(!menu.classList.contains("open"));
-  });
-  document.addEventListener("click", function(e){
-    if(!menu.contains(e.target)) setMenu(false);
-  });
-  document.addEventListener("keydown", function(e){
-    if(e.key === "Escape"){ setMenu(false); menuBtn.focus(); }
-  });
 })();
 </script>
 </body>
