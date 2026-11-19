@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -14,6 +13,8 @@
 :root {
   --red: #EF2F4E;
   --yellow: #FFBF31;
+  --mayo: #FFF7DC;
+  --mayo-shade: #F0DFA8;
 }
 
 * {
@@ -125,6 +126,50 @@ html, body {
     filter .3s ease;
 }
 
+/* MAYONAISE OP DE FRIET */
+
+.mayo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--fry-length) * .5);
+  height: calc(var(--fry-thickness) * 1.15);
+  background: var(--mayo);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 calc(var(--fry-thickness) * -.14) 0 var(--mayo-shade),
+    0 calc(var(--fry-thickness) * .1) calc(var(--fry-thickness) * .2) rgba(0, 0, 0, .18);
+  transform: translate(-50%, -58%) skewX(11.5deg);
+  transform-origin: center;
+  transition: transform .3s ease;
+  pointer-events: none;
+}
+
+/* kleinere druppels links en rechts */
+
+.mayo::before,
+.mayo::after {
+  content: "";
+  position: absolute;
+  background: var(--mayo);
+  border-radius: 50%;
+  box-shadow: inset 0 calc(var(--fry-thickness) * -.12) 0 var(--mayo-shade);
+}
+
+.mayo::before {
+  width: calc(var(--fry-thickness) * .95);
+  height: calc(var(--fry-thickness) * .95);
+  left: calc(var(--fry-thickness) * -.35);
+  top: calc(var(--fry-thickness) * .22);
+}
+
+.mayo::after {
+  width: calc(var(--fry-thickness) * .75);
+  height: calc(var(--fry-thickness) * .75);
+  right: calc(var(--fry-thickness) * -.25);
+  top: calc(var(--fry-thickness) * .05);
+}
+
 /* Hover */
 
 .nav-fry:hover .nav-fry-shape,
@@ -139,6 +184,13 @@ html, body {
   filter: drop-shadow(0 8px 5px rgba(0,0,0,.12));
 }
 
+/* De mayonaise wordt een beetje groter bij hover */
+
+.nav-fry:hover .mayo,
+.nav-fry:focus-visible .mayo {
+  transform: translate(-50%, -58%) skewX(11.5deg) scale(1.18);
+}
+
 /* Labels boven frietjes */
 
 .fry-label {
@@ -147,7 +199,7 @@ html, body {
   left: 50%;
   transform: translate(-50%, 10px);
 
-  color: var(--yellow);
+  color: #fff;
   font-family: "Jost", sans-serif;
   font-style: italic;
   font-weight: 800;
@@ -191,7 +243,8 @@ html, body {
 
 @media (prefers-reduced-motion: reduce) {
   .nav-fry-shape,
-  .fry-label {
+  .fry-label,
+  .mayo {
     transition: none;
   }
 }
@@ -244,7 +297,7 @@ html, body {
      href="02hetbeeld.html"
      aria-label="02. Het beeld">
 
-    <span class="nav-fry-shape"></span>
+    <span class="nav-fry-shape"><span class="mayo"></span></span>
     <span class="fry-label">02. HET BEELD</span>
   </a>
 
@@ -253,7 +306,7 @@ html, body {
      href="03tweeschermen.html"
      aria-label="03. Twee schermen">
 
-    <span class="nav-fry-shape"></span>
+    <span class="nav-fry-shape"><span class="mayo"></span></span>
     <span class="fry-label">03. TWEE SCHERMEN</span>
   </a>
 
@@ -262,7 +315,7 @@ html, body {
      href="04dehandeling.html"
      aria-label="04. De handeling">
 
-    <span class="nav-fry-shape"></span>
+    <span class="nav-fry-shape"><span class="mayo"></span></span>
     <span class="fry-label">04. DE HANDELING</span>
   </a>
 
